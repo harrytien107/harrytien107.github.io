@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #00aff0;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+  }
+}
+
+html, body {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.post-content {
+
+}
+
+.post-content p {
+  @apply pb-4;
+}
+
+.post-content ul {
+  @apply list-disc pl-8;
+}
