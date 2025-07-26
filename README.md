@@ -36,6 +36,7 @@ harrytien107.github.io/
 │       └── images/         # Optimized images
 ├── .lighthouserc.json      # Lighthouse CI configuration
 ├── package.json            # Node.js project configuration
+├── package-lock.json       # NPM dependency lock file
 ├── tsconfig.json           # TypeScript configuration
 └── README.md              # Project documentation
 ```

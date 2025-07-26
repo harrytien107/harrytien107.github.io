@@ -39,53 +39,57 @@ jobs:
       - name: Install dependencies
         run: |
           if [ -f package.json ]; then
-            npm ci
+            if [ -f package-lock.json ]; then
+              echo "Installing dependencies with npm ci..."
+              npm ci
+            else
+              echo "Installing dependencies with npm install..."
+              npm install
+            fi
           else
             echo "No package.json found, skipping npm install"
           fi
 
-      # Optional: Compile TypeScript if needed
-      - name: Compile TypeScript (Optional)
+      # Type check TypeScript if tsconfig.json exists
+      - name: TypeScript type check
         run: |
           if [ -f tsconfig.json ]; then
-            # Install TypeScript globally if not in package.json
-            if ! npm list typescript --depth=0 2>/dev/null; then
-              npm install -g typescript
-            fi
-            # Compile TypeScript files
-            echo "Compiling TypeScript..."
-            # Note: The current setup runs TS directly in browser, so compilation is optional
-            # tsc --noEmit # Just type check without output
-            echo "TypeScript check completed"
+            echo "Running TypeScript type check..."
+            # Use npx to run tsc without global install
+            npx tsc --noEmit
+            echo "TypeScript type check completed"
           else
-            echo "No tsconfig.json found, skipping TypeScript compilation"
+            echo "No tsconfig.json found, skipping TypeScript check"
           fi
 
-      # Optimize and prepare files for deployment
+      # Prepare files for deployment
       - name: Prepare deployment files
         run: |
           # Create deployment directory
           mkdir -p ./dist
           
           # Copy public files (HTML, favicon, etc.)
-          cp -r ./public/* ./dist/
+          if [ -d "./public" ]; then
+            cp -r ./public/* ./dist/
+            echo "Copied public files"
+          fi
           
           # Copy source files
-          cp -r ./src ./dist/
+          if [ -d "./src" ]; then
+            cp -r ./src ./dist/
+            echo "Copied source files"
+          fi
           
           # Copy other necessary files
           if [ -f tsconfig.json ]; then
             cp tsconfig.json ./dist/
           fi
           
+          # List contents for debugging
+          echo "Deployment directory contents:"
+          ls -la ./dist/
+          
           echo "Files prepared for deployment"
-
-      # Optional: Minify CSS and optimize files
-      - name: Optimize files (Optional)
-        run: |
-          echo "File optimization completed"
-          # You can add CSS/JS minification here if needed
-          # For example, using tools like clean-css-cli or terser
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
