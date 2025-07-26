@@ -4,6 +4,7 @@ title: Top 10 Anime That Taught Me About Technology
 description: Anime shows that surprisingly taught me technology concepts - combining my love for anime with learning
 date: 2024-10-15
 readTime: 7 min read
+categories: [personal, technology]
 tags: [Anime, Technology, Personal]
 ---
 

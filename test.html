@@ -1,0 +1,19 @@
+---
+layout: default
+title: Test Page
+---
+
+<h1>This is a test page</h1>
+<p>If you can see this, Jekyll is working correctly.</p>
+<p>Site title: {{ site.title }}</p>
+<p>Current date: {{ 'now' | date: "%Y-%m-%d" }}</p>
+
+<h2>Posts Count</h2>
+<p>Total posts: {{ site.posts.size }}</p>
+
+<h2>Posts List</h2>
+<ul>
+{% for post in site.posts %}
+  <li>{{ post.title }} - {{ post.date | date: "%Y-%m-%d" }}</li>
+{% endfor %}
+</ul> 

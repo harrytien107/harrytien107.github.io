@@ -4,6 +4,7 @@ title: Setting Up My First Lab Environment
 description: My attempt to create a home lab for network testing - documenting failures and lessons learned
 date: 2024-10-08
 readTime: 5 min read
+categories: [networking, hands-on]
 tags: [Lab Setup, Hands-on, Mistakes]
 ---
 

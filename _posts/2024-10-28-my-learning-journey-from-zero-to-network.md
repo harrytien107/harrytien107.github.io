@@ -4,6 +4,7 @@ title: My Learning Journey From Zero to Network
 description: My honest journey learning about networks from zero - sharing the struggles and discoveries
 date: 2024-10-28
 readTime: 3 min read
+categories: [learning, journey]
 tags: [Learning, Beginner, Journey]
 ---
 

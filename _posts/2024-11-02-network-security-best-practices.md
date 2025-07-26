@@ -4,6 +4,7 @@ title: Network Security Best Practices
 description: Essential security practices every engineer should know - written from a beginner's perspective
 date: 2024-11-02
 readTime: 5 min read
+categories: [security, networking]
 tags: [Security, Networking, Best Practices]
 ---
 
