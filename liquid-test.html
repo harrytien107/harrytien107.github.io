@@ -1,0 +1,34 @@
+---
+layout: default
+title: "Liquid Test"
+permalink: /liquid-test/
+---
+
+<div style="background: #f0f0f0; padding: 20px; margin: 20px;">
+  <h1>🧪 Jekyll Liquid Test</h1>
+  
+  <h2>Basic Variables:</h2>
+  <p>Site title: {{ site.title }}</p>
+  <p>Page title: {{ page.title }}</p>
+  <p>Current date: {{ 'now' | date: "%Y-%m-%d %H:%M" }}</p>
+  
+  <h2>Posts Debug:</h2>
+  <p>Posts array size: {{ site.posts.size }}</p>
+  <p>Posts exist: {% if site.posts %}YES{% else %}NO{% endif %}</p>
+  <p>Posts empty: {% if site.posts == empty %}YES{% else %}NO{% endif %}</p>
+  
+  <h2>Simple Loop Test:</h2>
+  {% assign test_array = "one,two,three" | split: "," %}
+  <ul>
+    {% for item in test_array %}
+    <li>Item: {{ item }}</li>
+    {% endfor %}
+  </ul>
+  
+  <h2>Posts Directory Test:</h2>
+  {% for post in site.posts limit:1 %}
+    <p>✅ Found post: {{ post.title }}</p>
+  {% else %}
+    <p>❌ No posts found</p>
+  {% endfor %}
+</div> 

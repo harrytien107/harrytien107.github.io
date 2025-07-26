@@ -38,9 +38,7 @@ social:
   # facebook: your-facebook
 
 # Collections
-collections:
-  posts:
-    output: true
+# (posts collection is built-in and doesn't need explicit configuration)
 
 # Plugin settings - only GitHub Pages supported plugins
 plugins:
