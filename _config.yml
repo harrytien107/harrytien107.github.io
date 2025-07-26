@@ -42,7 +42,7 @@ collections:
   posts:
     output: true
 
-# Plugin settings
+# Plugin settings - only GitHub Pages supported plugins
 plugins:
   - jekyll-feed
   - jekyll-sitemap
