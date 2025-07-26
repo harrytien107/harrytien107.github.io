@@ -1,36 +1,235 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# HarryTien Personal Website
 
-## Getting Started
+A modern, responsive personal website built with HTML, CSS, and TypeScript. Features a clean design with sections for blog posts, project showcase, categories, tags, network resources, and personal information.
 
-First, run the development server:
+## 🌟 Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Responsive Design**: Mobile-first approach with modern CSS Grid and Flexbox
+- **Single Page Application**: Smooth navigation without page reloads
+- **Blog System**: Notion-like editor with markdown support
+- **Project Showcase**: Display your projects with technologies and links
+- **Category & Tag System**: Organize content with filtering capabilities
+- **Accessibility**: WCAG compliant with keyboard navigation and screen reader support
+- **Dark Mode**: Automatic system preference detection
+- **TypeScript**: Strongly typed for better development experience
+
+## 📁 Project Structure
+
+```
+harrytien107.github.io/
+├── public/
+│   ├── index.html          # Main HTML file
+│   └── favicon.ico         # Site favicon
+├── src/
+│   ├── styles/
+│   │   ├── base.css        # Reset, typography, base styles
+│   │   ├── layout.css      # Layout and grid systems
+│   │   ├── components.css  # Component-specific styles
+│   │   └── utilities.css   # Utility classes
+│   ├── scripts/
+│   │   ├── main.ts         # Main application logic
+│   │   └── components/     # Reusable TypeScript modules
+│   └── assets/
+│       └── images/         # Optimized images
+├── tsconfig.json           # TypeScript configuration
+└── README.md              # Project documentation
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Getting Started
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Prerequisites
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- A modern web browser (Chrome 90+, Firefox 88+, Safari 14+, Edge 90+)
+- A web server for development (optional, can run from file system)
 
-## Learn More
+### Setup Instructions
 
-To learn more about Next.js, take a look at the following resources:
+1. **Clone or download the repository**
+   ```bash
+   git clone https://github.com/harrytien107/harrytien107.github.io.git
+   cd harrytien107.github.io
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. **Add your profile image**
+   - Replace `src/assets/images/profile.jpg` with your actual profile picture
+   - Recommended size: 300x300 pixels (square)
+   - Supported formats: JPG, PNG, WebP
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. **Add your favicon**
+   - Replace `public/favicon.ico` with your site favicon
+   - Recommended sizes: 16x16, 32x32, 48x48 pixels
 
-## Deploy on Vercel
+4. **Customize content**
+   - Update personal information in the HTML
+   - Modify social media links in the About section
+   - Add your actual GitHub username and project links
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+5. **Serve the website**
+   
+   **Option A: Simple HTTP Server (Python)**
+   ```bash
+   # Python 3
+   python -m http.server 8000
+   
+   # Python 2
+   python -m SimpleHTTPServer 8000
+   ```
+   
+   **Option B: Live Server (VS Code Extension)**
+   - Install the "Live Server" extension in VS Code
+   - Right-click on `public/index.html` and select "Open with Live Server"
+   
+   **Option C: Other options**
+   - Use any local web server like XAMPP, MAMP, or serve
+   - Or simply open `public/index.html` in your browser
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+6. **Visit your website**
+   - Open `http://localhost:8000` in your browser
+   - Navigate through different sections using the navigation menu
+
+## 🎨 Customization
+
+### Colors and Theming
+
+The website uses CSS custom properties for easy theming. Update the values in `src/styles/base.css`:
+
+```css
+:root {
+  --color-primary: #3b82f6;        /* Primary brand color */
+  --color-secondary: #64748b;      /* Secondary color */
+  --color-accent: #f59e0b;         /* Accent color */
+  /* ... other color variables */
+}
+```
+
+### Content Management
+
+1. **Projects**: Edit the sample projects in `src/scripts/main.ts` in the `loadSampleData()` method
+2. **Blog Posts**: Use the built-in blog editor or modify the sample posts
+3. **Categories & Tags**: Update the sample data to match your content
+4. **Social Links**: Update the href attributes in the About section
+
+### Styling
+
+- **Base styles**: `src/styles/base.css` - Typography, colors, CSS reset
+- **Layout**: `src/styles/layout.css` - Grid systems, page layouts
+- **Components**: `src/styles/components.css` - Buttons, cards, modals
+- **Utilities**: `src/styles/utilities.css` - Spacing, colors, responsive utilities
+
+## 🎯 Usage Guide
+
+### Navigation
+
+- **Desktop**: Click navigation links or use keyboard shortcuts (Ctrl+1-6)
+- **Mobile**: Use the hamburger menu button
+- **Keyboard**: Tab navigation and Enter/Space to activate
+- **Screen readers**: Full ARIA labels and semantic markup
+
+### Blog Editor
+
+1. Click "New Post" on the Blog page
+2. Use the Notion-like editor interface
+3. Add title, categories, tags, and content
+4. Use toolbar for basic formatting (bold, italic, headings, links)
+5. Save or publish your post
+
+### Content Management
+
+- **Projects**: Click on project cards for detailed view
+- **Categories**: Browse posts by category with dedicated views  
+- **Tags**: Tag cloud interface with post filtering
+- **Search**: Built-in search functionality for content discovery
+
+## 🔧 Development
+
+### TypeScript Development
+
+The project uses TypeScript for better code quality and development experience:
+
+```bash
+# If you want to add TypeScript compilation (optional)
+npm install -g typescript
+tsc --watch  # Watch mode for automatic compilation
+```
+
+### Component Architecture
+
+The application uses a modular component system:
+
+- **BlogManager**: Handles blog posts and editor functionality
+- **ProjectManager**: Manages project display and interactions
+- **CategoryManager**: Handles content categorization
+- **TagManager**: Manages tagging system
+- **NavigationManager**: Controls page routing and navigation
+
+### Adding New Features
+
+1. Create new component files in `src/scripts/components/`
+2. Import and initialize in `src/scripts/main.ts`
+3. Add corresponding styles in the appropriate CSS files
+4. Update HTML structure if needed
+
+## 📱 Browser Support
+
+- Chrome 90+
+- Firefox 88+
+- Safari 14+
+- Edge 90+
+- Mobile browsers (iOS Safari, Chrome Mobile)
+
+## ♿ Accessibility Features
+
+- Semantic HTML5 elements
+- ARIA labels and roles
+- Keyboard navigation support
+- Screen reader compatibility
+- Focus management
+- Color contrast compliance
+- Reduced motion support
+
+## 🚀 Deployment
+
+### GitHub Pages
+
+1. Push your code to a GitHub repository
+2. Go to repository Settings → Pages
+3. Select source branch (usually `main`)
+4. Your site will be available at `https://username.github.io/repository-name`
+
+### Other Hosting Platforms
+
+- **Netlify**: Drag and drop the `public` folder
+- **Vercel**: Connect your GitHub repository
+- **Surge.sh**: Use the Surge CLI tool
+- **Firebase Hosting**: Use Firebase CLI
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+## 🙏 Acknowledgments
+
+- Inspired by modern web design principles
+- Built with accessibility and performance in mind
+- Thanks to the web development community for best practices
+
+## 📞 Support
+
+If you have questions or need help:
+
+1. Check the documentation above
+2. Look at the code comments for implementation details
+3. Create an issue in the GitHub repository
+4. Reach out via the contact information in the About section
+
+---
+
+**Happy coding!** 🎉 

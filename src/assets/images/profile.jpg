@@ -1,0 +1,16 @@
+# Profile Image Placeholder
+
+This file represents where your profile image should be placed.
+
+Replace this file with your actual profile image named `profile.jpg`.
+
+Recommended specifications:
+- Format: JPG, PNG, or WebP
+- Size: 300x300 pixels (square)
+- Quality: High resolution for crisp display
+- File size: Under 500KB for optimal loading
+
+The image will be used in:
+- Hero section on the home page
+- About page profile section
+- Any other profile displays throughout the site 

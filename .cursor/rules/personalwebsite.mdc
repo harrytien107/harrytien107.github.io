@@ -1,0 +1,144 @@
+---
+alwaysApply: true
+---
+# Website Development Instructions
+
+## Project Overview
+This is a personal website project built with modern web technologies. The goal is to create a fast, accessible, and maintainable website using HTML, CSS, and TypeScript.
+
+## Technology Stack & Preferences
+
+### Core Technologies
+- **HTML5**: Use semantic HTML elements for better accessibility and SEO
+- **CSS3**: Modern CSS with Flexbox/Grid, custom properties, and responsive design
+- **TypeScript**: Strongly typed JavaScript for better code quality and maintainability
+
+### Development Philosophy
+- **Mobile-first responsive design**: Start with mobile layouts and enhance for larger screens
+- **Progressive enhancement**: Ensure core functionality works without JavaScript
+- **Accessibility-first**: Follow WCAG guidelines and semantic markup
+- **Performance-focused**: Optimize for Core Web Vitals and fast loading
+
+## Code Style & Conventions
+
+### HTML Guidelines
+- Use semantic HTML5 elements (`<header>`, `<nav>`, `<main>`, `<article>`, `<section>`, `<aside>`, `<footer>`)
+- Include proper `lang` attributes and meta tags
+- Use descriptive `alt` text for images
+- Implement proper heading hierarchy (h1 → h2 → h3)
+- Add ARIA labels where needed for enhanced accessibility
+
+### CSS Guidelines
+- Use CSS custom properties (CSS variables) for theming
+- Follow BEM methodology for class naming: `block__element--modifier`
+- Use CSS Grid for layout and Flexbox for component alignment
+- Implement responsive design with `rem`/`em` units
+- Use logical properties when appropriate (`margin-inline`, `padding-block`)
+- Organize CSS with the following order:
+  1. Layout properties (display, position, flex, grid)
+  2. Box model (margin, padding, border, width, height)
+  3. Typography (font, text-align, line-height)
+  4. Visual (color, background, opacity)
+  5. Misc (transition, transform, cursor)
+
+### TypeScript Guidelines
+- Use strict TypeScript configuration with `"strict": true`
+- Prefer interfaces over types for object shapes
+- Use descriptive variable and function names
+- Implement proper error handling with try-catch blocks
+- Use async/await over Promises when possible
+- Create custom types for complex data structures
+- Use ES6+ features (arrow functions, destructuring, template literals)
+
+## File Organization
+
+```
+/
+├── src/
+│   ├── styles/
+│   │   ├── base.css          # Reset, typography, base styles
+│   │   ├── components.css    # Component-specific styles
+│   │   ├── layout.css        # Layout and grid systems
+│   │   └── utilities.css     # Utility classes
+│   ├── scripts/
+│   │   ├── main.ts          # Main application logic
+│   │   ├── components/      # Reusable TypeScript modules
+│   │   └── utils/           # Utility functions
+│   └── assets/
+│       ├── images/          # Optimized images
+│       ├── icons/           # SVG icons
+│       └── fonts/           # Web fonts
+├── public/
+│   ├── index.html           # Main HTML file
+│   └── favicon.ico          # Site favicon
+└── docs/                    # Project documentation
+```
+
+## Development Best Practices
+
+### Performance Optimization
+- Optimize images (use WebP format when possible, include proper dimensions)
+- Minify CSS and JavaScript for production
+- Use CSS containment (`contain` property) where appropriate
+- Implement lazy loading for images and non-critical content
+- Use efficient selectors in CSS (avoid deep nesting)
+
+### Accessibility Requirements
+- Ensure keyboard navigation works for all interactive elements
+- Provide focus indicators that meet contrast requirements
+- Use proper color contrast ratios (4.5:1 for normal text, 3:1 for large text)
+- Include skip links for navigation
+- Test with screen readers and provide appropriate ARIA labels
+
+### Responsive Design Patterns
+- Use CSS Grid for complex layouts, Flexbox for simple alignments
+- Implement fluid typography with `clamp()` function
+- Create responsive images with `srcset` and `sizes` attributes
+- Use container queries when appropriate for component-based responsive design
+
+### Code Quality
+- Write self-documenting code with clear variable names
+- Add JSDoc comments for complex functions
+- Use ESLint and Prettier for consistent code formatting
+- Implement error boundaries and graceful error handling
+- Write unit tests for critical functionality
+
+## Component Architecture
+
+### Reusable Components
+When creating reusable components, follow these patterns:
+- Create a main component class or function
+- Use TypeScript interfaces for props/configuration
+- Implement proper event handling with custom events
+- Ensure components are accessible and keyboard navigable
+- Provide clear API documentation
+
+### State Management
+- Use modern browser APIs (localStorage, sessionStorage) for simple state
+- Implement proper data validation and sanitization
+- Use TypeScript enums for constants and configuration options
+- Create centralized state management for complex applications
+
+## Browser Support & Progressive Enhancement
+- Target modern browsers (Chrome 90+, Firefox 88+, Safari 14+, Edge 90+)
+- Use feature detection with `@supports` in CSS
+- Provide fallbacks for newer CSS features
+- Ensure core functionality works without JavaScript
+- Use polyfills only when necessary and load them conditionally
+
+## Security Considerations
+- Sanitize any user input before rendering
+- Use Content Security Policy (CSP) headers
+- Avoid inline scripts and styles in production
+- Implement proper HTTPS configuration
+- Validate and escape data appropriately
+
+## Testing Strategy
+- Test across different browsers and devices
+- Validate HTML markup
+- Check CSS for browser compatibility
+- Test JavaScript functionality with unit tests
+- Perform accessibility audits regularly
+- Monitor Core Web Vitals and performance metrics
+
+When generating code for this project, always consider these guidelines and prioritize clean, maintainable, and accessible code that follows modern web development best practices. 
