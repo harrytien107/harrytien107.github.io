@@ -1,0 +1,45 @@
+---
+layout: default
+title: "Tags"
+description: "Browse posts by tags"
+permalink: /tags/
+---
+
+<section class="page page--tags">
+    <div class="container">
+        <header class="page__header">
+            <h1 class="page__title">Tags</h1>
+            <p class="page__description">Browse posts by tags</p>
+        </header>
+
+        <div class="tags__content">
+            <div class="tag-cloud">
+                {% assign tags = site.tags | sort %}
+                {% for tag in tags %}
+                <a href="#tag-{{ tag[0] | slugify }}" class="tag tag--clickable" data-count="{{ tag[1].size }}">
+                    {{ tag[0] }}
+                    <span class="tag__count">{{ tag[1].size }}</span>
+                </a>
+                {% endfor %}
+            </div>
+
+            <div class="tag-posts">
+                {% for tag in site.tags %}
+                <div class="tag-section" id="tag-{{ tag[0] | slugify }}">
+                    <h2 class="tag-section__title">{{ tag[0] }}</h2>
+                    <div class="tag-section__posts">
+                        {% for post in tag[1] %}
+                        <article class="post-item">
+                            <time class="post-item__date">{{ post.date | date: "%b %d" }}</time>
+                            <h3 class="post-item__title">
+                                <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+                            </h3>
+                        </article>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section> 

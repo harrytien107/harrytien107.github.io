@@ -1,0 +1,37 @@
+---
+layout: default
+title: "Categories"
+description: "Browse posts by category"
+permalink: /categories/
+---
+
+<section class="page page--categories">
+    <div class="container">
+        <header class="page__header">
+            <h1 class="page__title">Categories</h1>
+            <p class="page__description">Browse posts organized by category</p>
+        </header>
+
+        <div class="categories__content">
+            {% assign categories = site.categories | sort %}
+            {% for category in categories %}
+            <div class="category">
+                <h2 class="category__title">{{ category[0] | capitalize }}</h2>
+                <div class="category__posts">
+                    {% for post in category[1] %}
+                    <article class="post-item">
+                        <time class="post-item__date">{{ post.date | date: "%b %d, %Y" }}</time>
+                        <h3 class="post-item__title">
+                            <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+                        </h3>
+                        {% if post.description %}
+                        <p class="post-item__excerpt">{{ post.description }}</p>
+                        {% endif %}
+                    </article>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section> 

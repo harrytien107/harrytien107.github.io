@@ -1,9 +1,10 @@
 ---
+layout: post
 title: Network Security Best Practices
 description: Essential security practices every engineer should know - written from a beginner's perspective
-date: November 15, 2024
+date: 2024-11-02
 readTime: 5 min read
-tags: Security, Networking, Best Practices
+tags: [Security, Networking, Best Practices]
 ---
 
 As someone who's still learning about networks (I really don't know much about them yet!), I've been trying to understand the essential security practices that every engineer should know. Here's what I've learned so far about network security fundamentals.

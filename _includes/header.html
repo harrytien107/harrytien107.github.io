@@ -1,0 +1,24 @@
+<header class="header">
+    <div class="header__container">
+        <div class="header__logo">
+            <a href="{{ '/' | relative_url }}" class="header__logo-link">{{ site.title }}</a>
+        </div>
+        <nav class="nav" aria-label="Main navigation">
+            <ul class="nav__list">
+                {% for nav_item in site.navigation %}
+                <li class="nav__item">
+                    <a href="{{ nav_item.url | relative_url }}" 
+                       class="nav__link{% if page.url == nav_item.url %} nav__link--active{% endif %}">
+                        {{ nav_item.title }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </nav>
+        <button class="nav__toggle" aria-label="Toggle navigation" aria-expanded="false">
+            <span class="nav__toggle-bar"></span>
+            <span class="nav__toggle-bar"></span>
+            <span class="nav__toggle-bar"></span>
+        </button>
+    </div>
+</header> 

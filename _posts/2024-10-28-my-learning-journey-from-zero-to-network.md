@@ -1,9 +1,10 @@
 ---
-title: My Learning Journey: From Zero to Network
+layout: post
+title: My Learning Journey From Zero to Network
 description: My honest journey learning about networks from zero - sharing the struggles and discoveries
-date: October 28, 2024
+date: 2024-10-28
 readTime: 3 min read
-tags: Learning, Beginner, Journey
+tags: [Learning, Beginner, Journey]
 ---
 
 Let me be completely honest with you: I really don't know anything about networks. But I'm documenting my learning journey because I believe there's value in sharing the struggle, the confusion, and the small victories that come with learning something new.

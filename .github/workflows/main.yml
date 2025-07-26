@@ -1,13 +1,11 @@
-name: Deploy to GitHub Pages
+name: Jekyll Build and Deploy
 
-# Trigger the workflow on push to main branch
 on:
+  # Runs on pushes targeting the default branch
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    branches: ["main"]
 
-# Allow manual workflow dispatch
+  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
@@ -17,6 +15,7 @@ permissions:
   id-token: write
 
 # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
   group: "pages"
   cancel-in-progress: false
@@ -26,103 +25,26 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+        
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
         with:
-          node-version: '18'
-          cache: 'npm'
-
-      # Install dependencies if package.json exists
-      - name: Install dependencies
-        run: |
-          if [ -f package.json ]; then
-            if [ -f package-lock.json ]; then
-              echo "Installing dependencies with npm ci..."
-              npm ci
-            else
-              echo "Installing dependencies with npm install..."
-              npm install
-            fi
-          else
-            echo "No package.json found, skipping npm install"
-          fi
-
-      # JavaScript syntax check (optional)
-      - name: JavaScript syntax check
-        run: |
-          echo "JavaScript files are ready for deployment"
-          # Optional: Add ESLint or other JavaScript linting here if needed
-
-      # Prepare files for deployment
-      - name: Prepare deployment files
-        run: |
-          # Create deployment directory
-          mkdir -p ./dist
+          ruby-version: '3.1'
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
           
-          # Copy all HTML files (now at root level)
-          if [ -f "./index.html" ]; then
-            cp ./index.html ./dist/
-            echo "Copied index.html"
-          fi
-          if [ -f "./blog.html" ]; then
-            cp ./blog.html ./dist/
-            echo "Copied blog.html"
-          fi
-          if [ -f "./categories.html" ]; then
-            cp ./categories.html ./dist/
-            echo "Copied categories.html"
-          fi
-          if [ -f "./tags.html" ]; then
-            cp ./tags.html ./dist/
-            echo "Copied tags.html"
-          fi
-          if [ -f "./network.html" ]; then
-            cp ./network.html ./dist/
-            echo "Copied network.html"
-          fi
-          if [ -f "./about.html" ]; then
-            cp ./about.html ./dist/
-            echo "Copied about.html"
-          fi
-          
-          # Copy source files
-          if [ -d "./src" ]; then
-            cp -r ./src ./dist/
-            echo "Copied source files"
-          fi
-          
-          # Copy blog posts folder
-          if [ -d "./posts" ]; then
-            cp -r ./posts ./dist/
-            echo "Copied blog posts"
-          fi
-          
-          # Copy public assets (favicon, etc.)
-          if [ -d "./public" ]; then
-            cp -r ./public ./dist/
-            echo "Copied public files"
-          fi
-          
-          # All necessary files have been copied
-          
-          # List contents for debugging
-          echo "Deployment directory contents:"
-          ls -la ./dist/
-          echo "Source files:"
-          ls -la ./dist/src/ || echo "No src directory"
-          
-          echo "Files prepared for deployment"
-
       - name: Setup Pages
+        id: pages
         uses: actions/configure-pages@v4
-
+        
+      - name: Build Jekyll site
+        run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
+        env:
+          JEKYLL_ENV: production
+          
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
-        with:
-          path: './dist'
 
   # Deployment job
   deploy:
@@ -134,26 +56,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
-
-  # Optional: Lighthouse CI for performance monitoring
-  lighthouse:
-    runs-on: ubuntu-latest
-    needs: deploy
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Wait for deployment
-        run: sleep 60
-
-      - name: Run Lighthouse CI
-        uses: treosh/lighthouse-ci-action@v10
-        with:
-          urls: |
-            ${{ needs.deploy.outputs.page_url }}
-          configPath: './.lighthouserc.json'
-          uploadArtifacts: true
-          temporaryPublicStorage: true
-        continue-on-error: true 
+        uses: actions/deploy-pages@v4 

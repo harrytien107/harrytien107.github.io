@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
+    <title>{% if page.title %}{{ page.title }} - {{ site.title }}{% else %}{{ site.title }}{% endif %}</title>
+    
+    <!-- SEO and social meta tags -->
+    {% seo %}
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
+    <link rel="icon" href="{{ '/public/favicon.ico' | relative_url }}" type="image/x-icon">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    {% include header.html %}
+
+    <main id="main-content" class="main">
+        {{ content }}
+    </main>
+
+    {% include footer.html %}
+</body>
+</html> 

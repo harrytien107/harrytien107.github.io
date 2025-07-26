@@ -1,9 +1,10 @@
 ---
+layout: post
 title: Top 10 Anime That Taught Me About Technology
 description: Anime shows that surprisingly taught me technology concepts - combining my love for anime with learning
-date: October 15, 2024
+date: 2024-10-15
 readTime: 7 min read
-tags: Anime, Technology, Personal
+tags: [Anime, Technology, Personal]
 ---
 
 As a cinematic enjoyer who loves films, anime, and manga, I've discovered that some of my favorite shows actually taught me more about technology concepts than I initially realized. Who knew entertainment could be educational? Here are the anime that surprisingly sparked my interest in tech!

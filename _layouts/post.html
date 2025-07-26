@@ -1,0 +1,44 @@
+---
+layout: default
+---
+
+<article class="blog-post">
+    <div class="container">
+        <header class="blog-post__header">
+            <nav class="breadcrumb">
+                <a href="{{ '/blog/' | relative_url }}">Blog</a> &gt; {{ page.title }}
+            </nav>
+            
+            <div class="blog-post__meta">
+                <time class="blog-post__date">{{ page.date | date: "%b %d, %Y" }}</time>
+                {% if page.readTime %}
+                <span class="blog-post__read-time">{{ page.readTime }}</span>
+                {% endif %}
+            </div>
+            
+            <h1 class="blog-post__title">{{ page.title }}</h1>
+            
+            {% if page.description %}
+            <p class="blog-post__description">{{ page.description }}</p>
+            {% endif %}
+            
+            {% if page.tags %}
+            <div class="blog-post__tags">
+                {% for tag in page.tags %}
+                <span class="tag">{{ tag }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </header>
+
+        <div class="blog-post__content">
+            {{ content }}
+        </div>
+
+        <footer class="blog-post__footer">
+            <div class="blog-post__navigation">
+                <a href="{{ '/blog/' | relative_url }}" class="btn btn--outline">← Back to Blog</a>
+            </div>
+        </footer>
+    </div>
+</article> 

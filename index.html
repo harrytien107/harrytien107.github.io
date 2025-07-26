@@ -1,191 +1,130 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="HarryTien - Network Engineer, Security Network, Cinematic enjoyer">
-    <title>HarryTien - Personal Website</title>
-    <link rel="stylesheet" href="src/styles/base.css">
-    <link rel="stylesheet" href="src/styles/layout.css">
-    <link rel="stylesheet" href="src/styles/components.css">
-    <link rel="stylesheet" href="src/styles/utilities.css">
-    <link rel="icon" href="public/favicon.ico" type="image/x-icon">
-</head>
-<body>
-    <a href="#main-content" class="skip-link">Skip to main content</a>
-    
-    <header class="header">
-        <div class="header__container">
-            <div class="header__logo">
-                <a href="index.html" class="header__logo-link">HarryTien</a>
-            </div>
-            <nav class="nav" aria-label="Main navigation">
-                <ul class="nav__list">
-                    <li class="nav__item">
-                        <a href="index.html" class="nav__link nav__link--active">Home</a>
-                    </li>
-                    <li class="nav__item">
-                        <a href="blog.html" class="nav__link">Blog</a>
-                    </li>
-                    <li class="nav__item">
-                        <a href="categories.html" class="nav__link">Categories</a>
-                    </li>
-                    <li class="nav__item">
-                        <a href="tags.html" class="nav__link">Tags</a>
-                    </li>
-                    <li class="nav__item">
-                        <a href="network.html" class="nav__link">Network</a>
-                    </li>
-                    <li class="nav__item">
-                        <a href="about.html" class="nav__link">About</a>
-                    </li>
-                </ul>
-            </nav>
-            <button class="nav__toggle" aria-label="Toggle navigation" aria-expanded="false">
-                <span class="nav__toggle-bar"></span>
-                <span class="nav__toggle-bar"></span>
-                <span class="nav__toggle-bar"></span>
-            </button>
-        </div>
-    </header>
+---
+layout: default
+title: "Home"
+description: "Hi, I'm HarryTien. I just loving code and try fun things."
+---
 
-    <main id="main-content" class="main">
-        <!-- Home Page Content -->
-        <section class="page page--home page--active">
-            <div class="container">
-                <section class="hero">
-                    <div class="hero__content">
-                        <div class="hero__text">
-                            <h1 class="hero__title">Hi, I'm HarryTien</h1>
-                            <p class="hero__description">I just loving code and try fun things.</p>
-                        </div>
-                        <div class="hero__image">
-                            <img src="src/assets/images/profile.jpg" alt="HarryTien's profile picture" class="hero__avatar">
-                        </div>
-                    </div>
-                </section>
-
-                <section class="what-i-do">
-                    <h2 class="section__title">What I Do</h2>
-                    <div class="what-i-do__content">
-                        <div class="what-i-do__item">
-                            <span class="what-i-do__text">Network Engineer</span>
-                            <p class="what-i-do__description">I really dunno anything about network</p>
-                        </div>
-                        <div class="what-i-do__item">
-                            <span class="what-i-do__text">Security Network</span>
-                            <p class="what-i-do__description">I try my best to learn it</p>
-                        </div>
-                        <div class="what-i-do__item">
-                            <span class="what-i-do__text">Cinematic enjoyer</span>
-                            <p class="what-i-do__description">I love films, anime, manga</p>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="projects">
-                    <h2 class="section__title">My Projects</h2>
-                    <div class="projects__grid" id="projects-container">
-                        <div class="project-card">
-                            <div class="project-card__image"></div>
-                            <div class="project-card__content">
-                                <h3 class="project-card__title">Network Security Dashboard</h3>
-                                <p class="project-card__description">A comprehensive dashboard for monitoring network security metrics and threats in real-time.</p>
-                                <div class="project-card__tech">
-                                    <span class="project-card__tech-item">JavaScript</span>
-                                    <span class="project-card__tech-item">React</span>
-                                    <span class="project-card__tech-item">D3.js</span>
-                                    <span class="project-card__tech-item">Node.js</span>
-                                </div>
-                                <div class="project-card__links">
-                                    <a href="https://github.com/harrytien107/network-security-dashboard" target="_blank" rel="noopener noreferrer" class="project-card__link">
-                                        GitHub
-                                    </a>
-                                    <a href="https://network-security-demo.netlify.app" target="_blank" rel="noopener noreferrer" class="project-card__link">
-                                        Live Demo
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="project-card">
-                            <div class="project-card__image"></div>
-                            <div class="project-card__content">
-                                <h3 class="project-card__title">Automated Network Diagnostics Tool</h3>
-                                <p class="project-card__description">Python-based tool for automated network diagnostics and performance analysis.</p>
-                                <div class="project-card__tech">
-                                    <span class="project-card__tech-item">Python</span>
-                                    <span class="project-card__tech-item">Flask</span>
-                                    <span class="project-card__tech-item">SQLite</span>
-                                    <span class="project-card__tech-item">Chart.js</span>
-                                </div>
-                                <div class="project-card__links">
-                                    <a href="https://github.com/harrytien107/network-diagnostics" target="_blank" rel="noopener noreferrer" class="project-card__link">
-                                        GitHub
-                                    </a>
-                                    <a href="https://network-diagnostics-demo.herokuapp.com" target="_blank" rel="noopener noreferrer" class="project-card__link">
-                                        Live Demo
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="project-card">
-                            <div class="project-card__image"></div>
-                            <div class="project-card__content">
-                                <h3 class="project-card__title">Cinematic Review Platform</h3>
-                                <p class="project-card__description">A movie review platform with advanced filtering and recommendation features.</p>
-                                <div class="project-card__tech">
-                                    <span class="project-card__tech-item">Vue.js</span>
-                                    <span class="project-card__tech-item">Express.js</span>
-                                    <span class="project-card__tech-item">MongoDB</span>
-                                    <span class="project-card__tech-item">TailwindCSS</span>
-                                </div>
-                                <div class="project-card__links">
-                                    <a href="https://github.com/harrytien107/cinematic-reviews" target="_blank" rel="noopener noreferrer" class="project-card__link">
-                                        GitHub
-                                    </a>
-                                    <span class="project-card__link" style="opacity: 0.5;">Coming Soon</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="music">
-                    <h2 class="section__title">My Favorite Music</h2>
-                    <div class="music__content">
-                        <a href="https://open.spotify.com/user/31iem24idd3bh2xe6jtei23pi55y?si=996814dbfaa94035" 
-                           target="_blank" 
-                           rel="noopener noreferrer" 
-                           class="music__link">
-                            <div class="music__card">
-                                <div class="music__icon">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z"/>
-                                    </svg>
-                                </div>
-                                <div class="music__info">
-                                    <h3 class="music__title">HarryLonghair</h3>
-                                    <p class="music__description">Listen to my curated playlists on Spotify</p>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </section>
+<section class="page page--home page--active">
+    <div class="container">
+        <section class="hero">
+            <div class="hero__content">
+                <div class="hero__text">
+                    <h1 class="hero__title">Hi, I'm {{ site.title }}</h1>
+                    <p class="hero__description">I just loving code and try fun things.</p>
+                </div>
+                <div class="hero__image">
+                    <img src="{{ '/src/assets/images/profile.jpg' | relative_url }}" alt="{{ site.title }}'s profile picture" class="hero__avatar">
+                </div>
             </div>
         </section>
-    </main>
 
-    <footer class="footer">
-        <div class="container">
-            <div class="footer__content">
-                <p class="footer__text">&copy; 2024 HarryTien. All rights reserved.</p>
-                <p class="footer__text">Built with ❤️ using HTML, CSS, and JavaScript</p>
+        <section class="what-i-do">
+            <h2 class="section__title">What I Do</h2>
+            <div class="what-i-do__content">
+                <div class="what-i-do__item">
+                    <span class="what-i-do__text">Network Engineer</span>
+                    <p class="what-i-do__description">I really dunno anything about network</p>
+                </div>
+                <div class="what-i-do__item">
+                    <span class="what-i-do__text">Security Network</span>
+                    <p class="what-i-do__description">I try my best to learn it</p>
+                </div>
+                <div class="what-i-do__item">
+                    <span class="what-i-do__text">Cinematic enjoyer</span>
+                    <p class="what-i-do__description">I love films, anime, manga</p>
+                </div>
             </div>
-        </div>
-    </footer>
+        </section>
 
+        <section class="projects">
+            <h2 class="section__title">My Projects</h2>
+            <div class="projects__grid" id="projects-container">
+                <div class="project-card">
+                    <div class="project-card__image"></div>
+                    <div class="project-card__content">
+                        <h3 class="project-card__title">Network Security Dashboard</h3>
+                        <p class="project-card__description">A comprehensive dashboard for monitoring network security metrics and threats in real-time.</p>
+                        <div class="project-card__tech">
+                            <span class="project-card__tech-item">JavaScript</span>
+                            <span class="project-card__tech-item">React</span>
+                            <span class="project-card__tech-item">D3.js</span>
+                            <span class="project-card__tech-item">Node.js</span>
+                        </div>
+                        <div class="project-card__links">
+                            <a href="https://github.com/harrytien107/network-security-dashboard" target="_blank" rel="noopener noreferrer" class="project-card__link">
+                                GitHub
+                            </a>
+                            <a href="https://network-security-demo.netlify.app" target="_blank" rel="noopener noreferrer" class="project-card__link">
+                                Live Demo
+                            </a>
+                        </div>
+                    </div>
+                </div>
 
-</body>
-</html> 
+                <div class="project-card">
+                    <div class="project-card__image"></div>
+                    <div class="project-card__content">
+                        <h3 class="project-card__title">Automated Network Diagnostics Tool</h3>
+                        <p class="project-card__description">Python-based tool for automated network diagnostics and performance analysis.</p>
+                        <div class="project-card__tech">
+                            <span class="project-card__tech-item">Python</span>
+                            <span class="project-card__tech-item">Flask</span>
+                            <span class="project-card__tech-item">SQLite</span>
+                            <span class="project-card__tech-item">Chart.js</span>
+                        </div>
+                        <div class="project-card__links">
+                            <a href="https://github.com/harrytien107/network-diagnostics" target="_blank" rel="noopener noreferrer" class="project-card__link">
+                                GitHub
+                            </a>
+                            <a href="https://network-diagnostics-demo.herokuapp.com" target="_blank" rel="noopener noreferrer" class="project-card__link">
+                                Live Demo
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-card__image"></div>
+                    <div class="project-card__content">
+                        <h3 class="project-card__title">Cinematic Review Platform</h3>
+                        <p class="project-card__description">A movie review platform with advanced filtering and recommendation features.</p>
+                        <div class="project-card__tech">
+                            <span class="project-card__tech-item">Vue.js</span>
+                            <span class="project-card__tech-item">Express.js</span>
+                            <span class="project-card__tech-item">MongoDB</span>
+                            <span class="project-card__tech-item">TailwindCSS</span>
+                        </div>
+                        <div class="project-card__links">
+                            <a href="https://github.com/harrytien107/cinematic-reviews" target="_blank" rel="noopener noreferrer" class="project-card__link">
+                                GitHub
+                            </a>
+                            <span class="project-card__link" style="opacity: 0.5;">Coming Soon</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="music">
+            <h2 class="section__title">My Favorite Music</h2>
+            <div class="music__content">
+                <a href="{{ site.social.spotify }}" 
+                   target="_blank" 
+                   rel="noopener noreferrer" 
+                   class="music__link">
+                    <div class="music__card">
+                        <div class="music__icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z"/>
+                            </svg>
+                        </div>
+                        <div class="music__info">
+                            <h3 class="music__title">HarryLonghair</h3>
+                            <p class="music__description">Listen to my curated playlists on Spotify</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </section>
+    </div>
+</section> 

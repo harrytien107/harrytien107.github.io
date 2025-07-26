@@ -1,9 +1,10 @@
 ---
+layout: post
 title: Setting Up My First Lab Environment
 description: My attempt to create a home lab for network testing - documenting failures and lessons learned
-date: October 8, 2024
+date: 2024-10-08
 readTime: 5 min read
-tags: Lab Setup, Hands-on, Mistakes
+tags: [Lab Setup, Hands-on, Mistakes]
 ---
 
 Documenting my attempt to create a home lab for network testing. Spoiler alert: it didn't go as planned, but I learned a lot from the experience. Sometimes the best education comes from making mistakes and figuring out what went wrong!

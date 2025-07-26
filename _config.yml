@@ -1,0 +1,71 @@
+# Site settings
+title: HarryTien
+description: >-
+  Personal website of HarryTien - Network Engineer, Security Network, Cinematic enjoyer.
+  I just loving code and try fun things.
+baseurl: ""
+url: "https://harrytien107.github.io"
+author:
+  name: HarryTien
+  email: your-email@example.com
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+permalink: /blog/:title/
+timezone: UTC
+
+# Navigation
+navigation:
+  - title: Home
+    url: /
+  - title: Blog
+    url: /blog/
+  - title: Categories
+    url: /categories/
+  - title: Tags
+    url: /tags/
+  - title: Network
+    url: /network/
+  - title: About
+    url: /about/
+
+# Social links
+social:
+  github: harrytien107
+  spotify: https://open.spotify.com/user/31iem24idd3bh2xe6jtei23pi55y?si=996814dbfaa94035
+  # twitter: your-twitter
+  # facebook: your-facebook
+
+# Collections
+collections:
+  posts:
+    output: true
+
+# Plugin settings
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Sass settings
+sass:
+  style: compressed
+  sass_dir: _sass
+
+# Exclude from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules/
+  - vendor/
+  - .sass-cache/
+  - .jekyll-cache/
+  - gemfiles/
+  - README.md
+  - LICENSE.txt
+  - CHANGELOG.md
+
+# Include files
+include:
+  - _pages 
