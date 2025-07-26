@@ -167,7 +167,7 @@
         <div class="container">
             <div class="footer__content">
                 <p class="footer__text">&copy; 2024 HarryTien. All rights reserved.</p>
-                <p class="footer__text">Built with ❤️ using HTML, CSS, and TypeScript</p>
+                <p class="footer__text">Built with ❤️ using HTML, CSS, and JavaScript</p>
             </div>
         </div>
     </footer>
@@ -192,26 +192,48 @@
         });
 
         async function loadMarkdownPost(filename) {
+            console.log('Loading blog post:', filename);
+            
             // Show loading state
             showLoadingState();
 
-            // Fetch the markdown file
-            const response = await fetch(`${filename}.md`);
-            if (!response.ok) {
-                throw new Error(`Failed to load post: ${response.status} ${response.statusText}`);
+            try {
+                // Check if marked is available
+                if (typeof marked === 'undefined') {
+                    throw new Error('Marked library not loaded');
+                }
+                
+                console.log('Fetching:', `${filename}.md`);
+                
+                // Fetch the markdown file
+                const response = await fetch(`${filename}.md`);
+                console.log('Fetch response:', response.status, response.statusText);
+                
+                if (!response.ok) {
+                    throw new Error(`Failed to load post: ${response.status} ${response.statusText}`);
+                }
+                
+                const markdownContent = await response.text();
+                console.log('Markdown content length:', markdownContent.length);
+                
+                // Parse frontmatter and content
+                const parseResult = parseFrontmatter(markdownContent);
+                console.log('Parsed frontmatter:', parseResult.frontmatter);
+                
+                // Update page metadata
+                updatePageMetadata(parseResult.frontmatter);
+                
+                // Convert markdown to HTML and render
+                const htmlContent = marked.parse(parseResult.content);
+                console.log('HTML content length:', htmlContent.length);
+                
+                document.getElementById('blog-content').innerHTML = htmlContent;
+                console.log('Blog post loaded successfully');
+                
+            } catch (error) {
+                console.error('Error in loadMarkdownPost:', error);
+                throw error;
             }
-            
-            const markdownContent = await response.text();
-            
-            // Parse frontmatter and content
-            const parseResult = parseFrontmatter(markdownContent);
-            
-            // Update page metadata
-            updatePageMetadata(parseResult.frontmatter);
-            
-            // Convert markdown to HTML and render
-            const htmlContent = marked.parse(parseResult.content);
-            document.getElementById('blog-content').innerHTML = htmlContent;
         }
 
         function parseFrontmatter(content) {
@@ -358,7 +380,5 @@
             return div.innerHTML;
         }
     </script>
-    
-    <script src="../src/scripts/main.ts" type="module"></script>
 </body>
 </html> 
