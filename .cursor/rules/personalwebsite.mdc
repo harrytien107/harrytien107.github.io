@@ -1,17 +1,14 @@
----
-alwaysApply: true
----
 # Website Development Instructions
 
 ## Project Overview
-This is a personal website project built with modern web technologies. The goal is to create a fast, accessible, and maintainable website using HTML, CSS, and TypeScript.
+This is a personal website project built with modern web technologies. The goal is to create a fast, accessible, and maintainable website using HTML, CSS, and JavaScript.
 
 ## Technology Stack & Preferences
 
 ### Core Technologies
 - **HTML5**: Use semantic HTML elements for better accessibility and SEO
 - **CSS3**: Modern CSS with Flexbox/Grid, custom properties, and responsive design
-- **TypeScript**: Strongly typed JavaScript for better code quality and maintainability
+- **JavaScript (ES6+)**: Modern JavaScript with ES modules, async/await, and clean coding practices
 
 ### Development Philosophy
 - **Mobile-first responsive design**: Start with mobile layouts and enhance for larger screens
@@ -41,14 +38,17 @@ This is a personal website project built with modern web technologies. The goal 
   4. Visual (color, background, opacity)
   5. Misc (transition, transform, cursor)
 
-### TypeScript Guidelines
-- Use strict TypeScript configuration with `"strict": true`
-- Prefer interfaces over types for object shapes
+### JavaScript Guidelines
+- Use modern ES6+ features (arrow functions, destructuring, template literals, modules)
+- Use `const` and `let` instead of `var` for better scoping
+- Prefer arrow functions for callbacks and simple functions
 - Use descriptive variable and function names
 - Implement proper error handling with try-catch blocks
 - Use async/await over Promises when possible
-- Create custom types for complex data structures
-- Use ES6+ features (arrow functions, destructuring, template literals)
+- Use JSDoc comments for function documentation
+- Follow consistent naming conventions (camelCase for variables and functions)
+- Use destructuring for cleaner code
+- Implement ES modules for better code organization
 
 ## File Organization
 
@@ -61,8 +61,8 @@ This is a personal website project built with modern web technologies. The goal 
 │   │   ├── layout.css        # Layout and grid systems
 │   │   └── utilities.css     # Utility classes
 │   ├── scripts/
-│   │   ├── main.ts          # Main application logic
-│   │   ├── components/      # Reusable TypeScript modules
+│   │   ├── main.js          # Main application logic
+│   │   ├── components/      # Reusable JavaScript modules
 │   │   └── utils/           # Utility functions
 │   └── assets/
 │       ├── images/          # Optimized images
@@ -82,6 +82,7 @@ This is a personal website project built with modern web technologies. The goal 
 - Use CSS containment (`contain` property) where appropriate
 - Implement lazy loading for images and non-critical content
 - Use efficient selectors in CSS (avoid deep nesting)
+- Use ES modules to enable tree-shaking and code splitting
 
 ### Accessibility Requirements
 - Ensure keyboard navigation works for all interactive elements
@@ -102,29 +103,45 @@ This is a personal website project built with modern web technologies. The goal 
 - Use ESLint and Prettier for consistent code formatting
 - Implement error boundaries and graceful error handling
 - Write unit tests for critical functionality
+- Use strict mode (`'use strict';`) in JavaScript files
+- Validate function parameters and handle edge cases
 
 ## Component Architecture
 
 ### Reusable Components
 When creating reusable components, follow these patterns:
-- Create a main component class or function
-- Use TypeScript interfaces for props/configuration
+- Create modular JavaScript classes or functions
+- Use JSDoc comments to document parameters and return values
 - Implement proper event handling with custom events
 - Ensure components are accessible and keyboard navigable
-- Provide clear API documentation
+- Use ES modules for importing/exporting components
+- Follow consistent API patterns across components
 
 ### State Management
 - Use modern browser APIs (localStorage, sessionStorage) for simple state
 - Implement proper data validation and sanitization
-- Use TypeScript enums for constants and configuration options
+- Use JavaScript objects and Map/Set for complex state management
 - Create centralized state management for complex applications
+- Use custom events for component communication
 
 ## Browser Support & Progressive Enhancement
 - Target modern browsers (Chrome 90+, Firefox 88+, Safari 14+, Edge 90+)
-- Use feature detection with `@supports` in CSS
-- Provide fallbacks for newer CSS features
+- Use feature detection with JavaScript and CSS `@supports`
+- Provide fallbacks for newer JavaScript features
 - Ensure core functionality works without JavaScript
 - Use polyfills only when necessary and load them conditionally
+- Test with older browsers when needed
+
+### Modern JavaScript Features to Use
+- **ES Modules**: `import/export` for modular code
+- **Async/Await**: For handling asynchronous operations
+- **Destructuring**: For cleaner variable assignments
+- **Template Literals**: For string interpolation
+- **Arrow Functions**: For concise function syntax
+- **Array Methods**: `map`, `filter`, `reduce`, `forEach`
+- **Object Methods**: `Object.assign`, `Object.keys`, spread operator
+- **Promises**: For asynchronous programming
+- **Classes**: For object-oriented programming when appropriate
 
 ## Security Considerations
 - Sanitize any user input before rendering
@@ -132,13 +149,74 @@ When creating reusable components, follow these patterns:
 - Avoid inline scripts and styles in production
 - Implement proper HTTPS configuration
 - Validate and escape data appropriately
+- Use secure coding practices to prevent XSS attacks
 
 ## Testing Strategy
 - Test across different browsers and devices
 - Validate HTML markup
 - Check CSS for browser compatibility
-- Test JavaScript functionality with unit tests
+- Test JavaScript functionality with unit tests (Jest, Mocha, or similar)
 - Perform accessibility audits regularly
+- Monitor Core Web Vitals and performance metrics
+- Use browser developer tools for debugging
+
+## JavaScript Code Examples
+
+### Module Pattern
+```javascript
+// utils/helpers.js
+export const formatDate = (date) => {
+  return new Intl.DateTimeFormat('en-US').format(date);
+};
+
+export const debounce = (func, wait) => {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+};
+```
+
+### Component Pattern
+```javascript
+// components/navbar.js
+class Navbar {
+  constructor(selector, options = {}) {
+    this.element = document.querySelector(selector);
+    this.options = { ...this.defaultOptions, ...options };
+    this.init();
+  }
+
+  get defaultOptions() {
+    return {
+      activeClass: 'navbar__item--active',
+      mobileBreakpoint: 768
+    };
+  }
+
+  init() {
+    this.bindEvents();
+    this.setActiveItem();
+  }
+
+  bindEvents() {
+    this.element.addEventListener('click', this.handleClick.bind(this));
+  }
+
+  handleClick(event) {
+    if (event.target.matches('.navbar__item')) {
+      this.setActiveItem(event.target);
+    }
+  }
+}
+```
+
+When generating code for this project, always consider these guidelines and prioritize clean, maintainable, and accessible code that follows modern JavaScript development best practices. 
 - Monitor Core Web Vitals and performance metrics
 
 When generating code for this project, always consider these guidelines and prioritize clean, maintainable, and accessible code that follows modern web development best practices. 

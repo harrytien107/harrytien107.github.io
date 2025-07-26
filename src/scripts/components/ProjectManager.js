@@ -1,25 +1,13 @@
 // Project Manager Component
-export interface Project {
-  id: string;
-  title: string;
-  description: string;
-  technologies: string[];
-  image?: string;
-  github?: string;
-  demo?: string;
-}
-
 export class ProjectManager {
-  private projects: Project[] = [];
-
   constructor() {
-    // Initialize project manager
+    this.projects = [];
   }
 
   /**
    * Initialize the project manager
    */
-  public async init(): Promise<void> {
+  async init() {
     console.log('💼 Initializing Project Manager...');
     // Setup project-specific functionality
   }
@@ -27,28 +15,28 @@ export class ProjectManager {
   /**
    * Get all projects
    */
-  public async getProjects(): Promise<Project[]> {
+  async getProjects() {
     return [...this.projects];
   }
 
   /**
    * Set projects
    */
-  public setProjects(projects: Project[]): void {
+  setProjects(projects) {
     this.projects = [...projects];
   }
 
   /**
    * Add a new project
    */
-  public addProject(project: Project): void {
+  addProject(project) {
     this.projects.push(project);
   }
 
   /**
    * Update an existing project
    */
-  public updateProject(id: string, updatedProject: Partial<Project>): void {
+  updateProject(id, updatedProject) {
     const index = this.projects.findIndex(project => project.id === id);
     if (index !== -1) {
       this.projects[index] = { ...this.projects[index], ...updatedProject };
@@ -58,14 +46,14 @@ export class ProjectManager {
   /**
    * Delete a project
    */
-  public deleteProject(id: string): void {
+  deleteProject(id) {
     this.projects = this.projects.filter(project => project.id !== id);
   }
 
   /**
    * Render projects to a container
    */
-  public renderProjects(projects: Project[], container: HTMLElement): void {
+  renderProjects(projects, container) {
     container.innerHTML = '';
 
     if (projects.length === 0) {
@@ -87,7 +75,7 @@ export class ProjectManager {
   /**
    * Create a project element
    */
-  private createProjectElement(project: Project): HTMLElement {
+  createProjectElement(project) {
     const projectDiv = document.createElement('div');
     projectDiv.className = 'project-card';
     
@@ -134,11 +122,11 @@ export class ProjectManager {
   /**
    * Add event listeners to a project element
    */
-  private addProjectEventListeners(element: HTMLElement, project: Project): void {
+  addProjectEventListeners(element, project) {
     // Add click handler for project card (optional detail view)
     element.addEventListener('click', (e) => {
       // Don't trigger if clicking on links
-      if ((e.target as HTMLElement).tagName === 'A') {
+      if (e.target.tagName === 'A') {
         return;
       }
       
@@ -159,7 +147,7 @@ export class ProjectManager {
   /**
    * Show project details in a modal (optional feature)
    */
-  private showProjectDetails(project: Project): void {
+  showProjectDetails(project) {
     // Create modal for project details
     const modal = document.createElement('div');
     modal.className = 'modal-overlay';
@@ -223,7 +211,7 @@ export class ProjectManager {
     });
 
     // Escape key to close
-    const handleEscape = (e: KeyboardEvent) => {
+    const handleEscape = (e) => {
       if (e.key === 'Escape') {
         closeModal();
         document.removeEventListener('keydown', handleEscape);
@@ -241,7 +229,7 @@ export class ProjectManager {
   /**
    * Filter projects by technology
    */
-  public filterByTechnology(technology: string): Project[] {
+  filterByTechnology(technology) {
     return this.projects.filter(project => 
       project.technologies.some(tech => 
         tech.toLowerCase().includes(technology.toLowerCase())
@@ -252,7 +240,7 @@ export class ProjectManager {
   /**
    * Search projects by title or description
    */
-  public searchProjects(query: string): Project[] {
+  searchProjects(query) {
     const lowerQuery = query.toLowerCase();
     return this.projects.filter(project => 
       project.title.toLowerCase().includes(lowerQuery) ||
@@ -263,8 +251,8 @@ export class ProjectManager {
   /**
    * Get all unique technologies from projects
    */
-  public getAllTechnologies(): string[] {
-    const technologies = new Set<string>();
+  getAllTechnologies() {
+    const technologies = new Set();
     this.projects.forEach(project => {
       project.technologies.forEach(tech => technologies.add(tech));
     });
@@ -274,7 +262,7 @@ export class ProjectManager {
   /**
    * Get featured projects (first 3 projects for home page)
    */
-  public getFeaturedProjects(): Project[] {
+  getFeaturedProjects() {
     return this.projects.slice(0, 3);
   }
 } 

@@ -1,21 +1,13 @@
 // Tag Manager Component
-export interface Tag {
-  id: string;
-  name: string;
-  count: number;
-}
-
 export class TagManager {
-  private tags: Tag[] = [];
-
   constructor() {
-    // Initialize tag manager
+    this.tags = [];
   }
 
   /**
    * Initialize the tag manager
    */
-  public async init(): Promise<void> {
+  async init() {
     console.log('🏷️ Initializing Tag Manager...');
     // Setup tag-specific functionality
   }
@@ -23,21 +15,21 @@ export class TagManager {
   /**
    * Get all tags
    */
-  public async getTags(): Promise<Tag[]> {
+  async getTags() {
     return [...this.tags];
   }
 
   /**
    * Set tags
    */
-  public setTags(tags: Tag[]): void {
+  setTags(tags) {
     this.tags = [...tags];
   }
 
   /**
    * Add a new tag
    */
-  public addTag(tag: Tag): void {
+  addTag(tag) {
     const existingTag = this.getTagByName(tag.name);
     if (existingTag) {
       this.updateTag(existingTag.id, { count: existingTag.count + 1 });
@@ -49,7 +41,7 @@ export class TagManager {
   /**
    * Update an existing tag
    */
-  public updateTag(id: string, updatedTag: Partial<Tag>): void {
+  updateTag(id, updatedTag) {
     const index = this.tags.findIndex(tag => tag.id === id);
     if (index !== -1) {
       this.tags[index] = { ...this.tags[index], ...updatedTag };
@@ -59,14 +51,14 @@ export class TagManager {
   /**
    * Delete a tag
    */
-  public deleteTag(id: string): void {
+  deleteTag(id) {
     this.tags = this.tags.filter(tag => tag.id !== id);
   }
 
   /**
    * Get tag by name
    */
-  public getTagByName(name: string): Tag | undefined {
+  getTagByName(name) {
     return this.tags.find(tag => 
       tag.name.toLowerCase() === name.toLowerCase()
     );
@@ -75,14 +67,14 @@ export class TagManager {
   /**
    * Get tag by ID
    */
-  public getTagById(id: string): Tag | undefined {
+  getTagById(id) {
     return this.tags.find(tag => tag.id === id);
   }
 
   /**
    * Render tags to a container
    */
-  public renderTags(tags: Tag[], container: HTMLElement): void {
+  renderTags(tags, container) {
     container.innerHTML = '';
 
     if (tags.length === 0) {
@@ -107,7 +99,7 @@ export class TagManager {
   /**
    * Create a tag element
    */
-  private createTagElement(tag: Tag): HTMLElement {
+  createTagElement(tag) {
     const tagSpan = document.createElement('span');
     
     // Calculate tag size based on count (tag cloud effect)
@@ -131,7 +123,7 @@ export class TagManager {
   /**
    * Calculate tag size based on usage count
    */
-  private calculateTagSize(count: number): string {
+  calculateTagSize(count) {
     const maxCount = Math.max(...this.tags.map(t => t.count));
     const minCount = Math.min(...this.tags.map(t => t.count));
     const ratio = maxCount > minCount ? (count - minCount) / (maxCount - minCount) : 0.5;
@@ -146,7 +138,7 @@ export class TagManager {
   /**
    * Add event listeners to a tag element
    */
-  private addTagEventListeners(element: HTMLElement, tag: Tag): void {
+  addTagEventListeners(element, tag) {
     element.addEventListener('click', (e) => {
       e.preventDefault();
       this.handleTagClick(tag);
@@ -174,7 +166,7 @@ export class TagManager {
   /**
    * Handle tag click
    */
-  private handleTagClick(tag: Tag): void {
+  handleTagClick(tag) {
     console.log(`Clicked on tag: ${tag.name}`);
     
     // In a real application, this would:
@@ -189,7 +181,7 @@ export class TagManager {
   /**
    * Show details for a specific tag
    */
-  private showTagDetails(tag: Tag): void {
+  showTagDetails(tag) {
     // Create modal to show tag details
     const modal = document.createElement('div');
     modal.className = 'modal-overlay';
@@ -250,7 +242,7 @@ export class TagManager {
     });
 
     // Escape key to close
-    const handleEscape = (e: KeyboardEvent) => {
+    const handleEscape = (e) => {
       if (e.key === 'Escape') {
         closeModal();
         document.removeEventListener('keydown', handleEscape);
@@ -270,7 +262,7 @@ export class TagManager {
   /**
    * Load posts for a tag (simulated)
    */
-  private loadTagPosts(tag: Tag, modal: HTMLElement): void {
+  loadTagPosts(tag, modal) {
     const postsList = modal.querySelector('#tag-posts-list');
     
     // Simulate API call delay
@@ -293,7 +285,7 @@ export class TagManager {
                   ${post.excerpt}
                 </p>
                 <div style="display: flex; flex-wrap: wrap; gap: 0.25rem;">
-                  ${post.tags.map((t: string) => `<span class="tag" style="font-size: 0.75rem;">${t}</span>`).join('')}
+                  ${post.tags.map(t => `<span class="tag" style="font-size: 0.75rem;">${t}</span>`).join('')}
                 </div>
               </div>
             `).join('')}
@@ -313,8 +305,8 @@ export class TagManager {
   /**
    * Generate sample posts for a tag (for demonstration)
    */
-  private generateSampleTagPosts(tag: Tag) {
-    const samplePostsMap: Record<string, any[]> = {
+  generateSampleTagPosts(tag) {
+    const samplePostsMap = {
       'networking': [
         {
           title: 'Understanding Modern Network Security Challenges',
@@ -373,7 +365,7 @@ export class TagManager {
   /**
    * Calculate what percentage of total posts this tag represents
    */
-  private calculateTagPercentage(count: number): number {
+  calculateTagPercentage(count) {
     const totalCount = this.tags.reduce((sum, tag) => sum + tag.count, 0);
     return totalCount > 0 ? Math.round((count / totalCount) * 100) : 0;
   }
@@ -381,7 +373,7 @@ export class TagManager {
   /**
    * Search tags by name
    */
-  public searchTags(query: string): Tag[] {
+  searchTags(query) {
     const lowerQuery = query.toLowerCase();
     return this.tags.filter(tag => 
       tag.name.toLowerCase().includes(lowerQuery)
@@ -391,7 +383,7 @@ export class TagManager {
   /**
    * Get tags sorted by count
    */
-  public getTagsByCount(ascending: boolean = false): Tag[] {
+  getTagsByCount(ascending = false) {
     return [...this.tags].sort((a, b) => 
       ascending ? a.count - b.count : b.count - a.count
     );
@@ -400,7 +392,7 @@ export class TagManager {
   /**
    * Get tags sorted alphabetically
    */
-  public getTagsAlphabetically(ascending: boolean = true): Tag[] {
+  getTagsAlphabetically(ascending = true) {
     return [...this.tags].sort((a, b) => 
       ascending ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name)
     );
@@ -409,14 +401,14 @@ export class TagManager {
   /**
    * Get popular tags (top N by count)
    */
-  public getPopularTags(limit: number = 10): Tag[] {
+  getPopularTags(limit = 10) {
     return this.getTagsByCount().slice(0, limit);
   }
 
   /**
    * Update tag count
    */
-  public updateTagCount(tagName: string, count: number): void {
+  updateTagCount(tagName, count) {
     const tag = this.getTagByName(tagName);
     if (tag) {
       this.updateTag(tag.id, { count });
@@ -426,7 +418,7 @@ export class TagManager {
   /**
    * Increment tag count
    */
-  public incrementTagCount(tagName: string): void {
+  incrementTagCount(tagName) {
     const tag = this.getTagByName(tagName);
     if (tag) {
       this.updateTag(tag.id, { count: tag.count + 1 });
@@ -436,7 +428,7 @@ export class TagManager {
   /**
    * Decrement tag count (and remove if count reaches 0)
    */
-  public decrementTagCount(tagName: string): void {
+  decrementTagCount(tagName) {
     const tag = this.getTagByName(tagName);
     if (tag) {
       if (tag.count <= 1) {
@@ -450,14 +442,14 @@ export class TagManager {
   /**
    * Get total post count across all tags
    */
-  public getTotalTaggedPosts(): number {
+  getTotalTaggedPosts() {
     return this.tags.reduce((total, tag) => total + tag.count, 0);
   }
 
   /**
    * Get related tags (tags that commonly appear together)
    */
-  public getRelatedTags(tagName: string, limit: number = 5): Tag[] {
+  getRelatedTags(tagName, limit = 5) {
     // In a real application, this would analyze co-occurrence patterns
     // For now, return popular tags excluding the current one
     return this.getPopularTags(limit + 1)

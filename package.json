@@ -2,11 +2,10 @@
   "name": "harrytien-personal-website",
   "version": "1.0.0",
   "description": "Personal website for HarryTien - Network Engineer, Security Network, Cinematic enjoyer",
-  "main": "src/scripts/main.ts",
+  "main": "src/scripts/main.js",
   "scripts": {
     "dev": "python -m http.server 8000 || python3 -m http.server 8000",
     "serve": "python -m http.server 8000 || python3 -m http.server 8000",
-    "type-check": "tsc --noEmit",
     "build": "echo 'Build completed - static files ready for deployment'",
     "lint": "echo 'Linting completed'",
     "test": "echo 'No tests specified'"
@@ -15,7 +14,7 @@
     "personal-website",
     "portfolio",
     "blog",
-    "typescript",
+    "javascript",
     "html5",
     "css3",
     "responsive",
@@ -28,9 +27,7 @@
     "url": "https://github.com/harrytien107/harrytien107.github.io.git"
   },
   "homepage": "https://harrytien107.github.io",
-  "devDependencies": {
-    "typescript": "^5.0.0"
-  },
+  "devDependencies": {},
   "engines": {
     "node": ">=16.0.0"
   },

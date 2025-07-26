@@ -172,15 +172,191 @@
         </div>
     </footer>
 
-    <script type="module">
-        // Import the TypeScript BlogManager
-        import { BlogManager } from '../src/scripts/components/BlogManager.js';
-
-        // Initialize the blog manager when the page loads
+    <script>
+        // Initialize when page loads
         document.addEventListener('DOMContentLoaded', async () => {
-            const blogManager = new BlogManager();
-            await blogManager.init();
+            const urlParams = new URLSearchParams(window.location.search);
+            const postFile = urlParams.get('post');
+            
+            if (!postFile) {
+                document.getElementById('blog-content').innerHTML = '<p>No blog post specified.</p>';
+                return;
+            }
+
+            try {
+                await loadMarkdownPost(postFile);
+            } catch (error) {
+                console.error('Error loading blog post:', error);
+                displayError('Sorry, this blog post could not be loaded.');
+            }
         });
+
+        async function loadMarkdownPost(filename) {
+            // Show loading state
+            showLoadingState();
+
+            // Fetch the markdown file
+            const response = await fetch(`${filename}.md`);
+            if (!response.ok) {
+                throw new Error(`Failed to load post: ${response.status} ${response.statusText}`);
+            }
+            
+            const markdownContent = await response.text();
+            
+            // Parse frontmatter and content
+            const parseResult = parseFrontmatter(markdownContent);
+            
+            // Update page metadata
+            updatePageMetadata(parseResult.frontmatter);
+            
+            // Convert markdown to HTML and render
+            const htmlContent = marked.parse(parseResult.content);
+            document.getElementById('blog-content').innerHTML = htmlContent;
+        }
+
+        function parseFrontmatter(content) {
+            const lines = content.split('\n');
+            
+            // Check if content starts with frontmatter delimiter
+            if (lines[0] !== '---') {
+                return { 
+                    frontmatter: getDefaultFrontmatter(), 
+                    content: content 
+                };
+            }
+            
+            // Find the end of frontmatter
+            let endIndex = -1;
+            for (let i = 1; i < lines.length; i++) {
+                if (lines[i] === '---') {
+                    endIndex = i;
+                    break;
+                }
+            }
+            
+            if (endIndex === -1) {
+                return { 
+                    frontmatter: getDefaultFrontmatter(), 
+                    content: content 
+                };
+            }
+            
+            // Parse frontmatter lines
+            const frontmatterLines = lines.slice(1, endIndex);
+            const contentLines = lines.slice(endIndex + 1);
+            
+            const frontmatter = {};
+            frontmatterLines.forEach(line => {
+                const colonIndex = line.indexOf(':');
+                if (colonIndex > 0) {
+                    const key = line.substring(0, colonIndex).trim();
+                    const value = line.substring(colonIndex + 1).trim().replace(/^["']|["']$/g, '');
+                    frontmatter[key] = value;
+                }
+            });
+            
+            return {
+                frontmatter: { ...getDefaultFrontmatter(), ...frontmatter },
+                content: contentLines.join('\n')
+            };
+        }
+
+        function getDefaultFrontmatter() {
+            return {
+                title: 'Untitled Post',
+                description: 'A blog post',
+                date: new Date().toLocaleDateString(),
+                readTime: '1 min read',
+                tags: ''
+            };
+        }
+
+        function updatePageMetadata(frontmatter) {
+            // Update page title
+            if (frontmatter.title) {
+                document.title = `${frontmatter.title} - HarryTien`;
+                
+                const postTitle = document.getElementById('post-title');
+                const postHeaderTitle = document.getElementById('post-header-title');
+                const breadcrumbTitle = document.getElementById('breadcrumb-title');
+                
+                if (postTitle) postTitle.textContent = `${frontmatter.title} - HarryTien`;
+                if (postHeaderTitle) postHeaderTitle.textContent = frontmatter.title;
+                if (breadcrumbTitle) breadcrumbTitle.textContent = frontmatter.title;
+            }
+            
+            // Update meta description
+            if (frontmatter.description) {
+                const metaDesc = document.querySelector('meta[name="description"]');
+                if (metaDesc) {
+                    metaDesc.content = frontmatter.description;
+                }
+            }
+            
+            // Update post metadata (date and read time)
+            if (frontmatter.date || frontmatter.readTime) {
+                const metaElement = document.getElementById('post-meta');
+                if (metaElement) {
+                    metaElement.style.display = 'block';
+                    
+                    const postDate = document.getElementById('post-date');
+                    const postReadTime = document.getElementById('post-read-time');
+                    
+                    if (frontmatter.date && postDate) {
+                        postDate.textContent = frontmatter.date;
+                    }
+                    
+                    if (frontmatter.readTime && postReadTime) {
+                        postReadTime.textContent = frontmatter.readTime;
+                    }
+                }
+            }
+            
+            // Update tags
+            if (frontmatter.tags) {
+                const tagsElement = document.getElementById('post-tags');
+                if (tagsElement) {
+                    const tags = frontmatter.tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+                    if (tags.length > 0) {
+                        tagsElement.innerHTML = tags.map(tag => 
+                            `<span class="tag">${escapeHtml(tag)}</span>`
+                        ).join('');
+                        tagsElement.style.display = 'block';
+                    }
+                }
+            }
+        }
+
+        function showLoadingState() {
+            const contentElement = document.getElementById('blog-content');
+            if (contentElement) {
+                contentElement.innerHTML = `
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                        <p>Loading blog post...</p>
+                    </div>
+                `;
+            }
+        }
+
+        function displayError(message) {
+            const contentElement = document.getElementById('blog-content');
+            if (contentElement) {
+                contentElement.innerHTML = `
+                    <div class="error-message">
+                        <h3>Oops! Something went wrong</h3>
+                        <p>${escapeHtml(message)}</p>
+                        <p><a href="../blog.html" class="btn btn--outline">← Back to Blog</a></p>
+                    </div>
+                `;
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
     </script>
     
     <script src="../src/scripts/main.ts" type="module"></script>

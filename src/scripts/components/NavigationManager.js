@@ -1,17 +1,15 @@
 // Navigation Manager Component
 export class NavigationManager {
-  private currentPage: string = 'home';
-  private navigationHistory: string[] = [];
-  private validPages: string[] = ['home', 'blog', 'categories', 'tags', 'network', 'about'];
-
   constructor() {
-    // Initialize navigation manager
+    this.currentPage = 'home';
+    this.navigationHistory = [];
+    this.validPages = ['home', 'blog', 'categories', 'tags', 'network', 'about'];
   }
 
   /**
    * Initialize the navigation manager
    */
-  public async init(): Promise<void> {
+  async init() {
     console.log('🧭 Initializing Navigation Manager...');
     
     // Setup navigation event listeners
@@ -27,11 +25,11 @@ export class NavigationManager {
   /**
    * Setup navigation event listeners
    */
-  private setupNavigationListeners(): void {
+  setupNavigationListeners() {
     // Handle navigation link clicks
     document.addEventListener('click', (event) => {
-      const target = event.target as HTMLElement;
-      const navLink = target.closest('[data-page]') as HTMLElement;
+      const target = event.target;
+      const navLink = target.closest('[data-page]');
       
       if (navLink) {
         event.preventDefault();
@@ -79,7 +77,7 @@ export class NavigationManager {
   /**
    * Setup browser history handling
    */
-  private setupHistoryHandling(): void {
+  setupHistoryHandling() {
     // Handle browser back/forward buttons
     window.addEventListener('popstate', () => {
       const page = this.getCurrentPageFromURL();
@@ -93,7 +91,7 @@ export class NavigationManager {
   /**
    * Navigate to a specific page
    */
-  public navigateTo(page: string, pushToHistory: boolean = true): void {
+  navigateTo(page, pushToHistory = true) {
     if (!this.isValidPage(page)) {
       console.warn(`Invalid page: ${page}`);
       return;
@@ -115,7 +113,7 @@ export class NavigationManager {
   /**
    * Show a specific page
    */
-  private showPage(page: string, pushToHistory: boolean = true): void {
+  showPage(page, pushToHistory = true) {
     // Hide all pages
     const pages = document.querySelectorAll('.page');
     pages.forEach(p => {
@@ -160,7 +158,7 @@ export class NavigationManager {
   /**
    * Update navigation active state
    */
-  private updateNavigationActiveState(activePage: string): void {
+  updateNavigationActiveState(activePage) {
     const navLinks = document.querySelectorAll('.nav__link');
     navLinks.forEach(link => {
       const page = link.getAttribute('data-page');
@@ -174,7 +172,7 @@ export class NavigationManager {
   /**
    * Update browser URL
    */
-  private updateURL(page: string): void {
+  updateURL(page) {
     const url = page === 'home' ? '/' : `/#${page}`;
     window.history.pushState({ page }, '', url);
   }
@@ -182,7 +180,7 @@ export class NavigationManager {
   /**
    * Update page title
    */
-  private updatePageTitle(): void {
+  updatePageTitle() {
     const pageTitle = this.getPageTitle(this.currentPage);
     document.title = `${pageTitle} - HarryTien`;
   }
@@ -190,8 +188,8 @@ export class NavigationManager {
   /**
    * Get title for a specific page
    */
-  private getPageTitle(page: string): string {
-    const titles: Record<string, string> = {
+  getPageTitle(page) {
+    const titles = {
       home: 'Home',
       blog: 'Blog',
       categories: 'Categories',
@@ -206,7 +204,7 @@ export class NavigationManager {
   /**
    * Announce page change to screen readers
    */
-  private announcePageChange(page: string): void {
+  announcePageChange(page) {
     const announcement = document.createElement('div');
     announcement.setAttribute('aria-live', 'polite');
     announcement.setAttribute('aria-atomic', 'true');
@@ -226,19 +224,19 @@ export class NavigationManager {
   /**
    * Manage focus for accessibility
    */
-  private manageFocus(page: string): void {
+  manageFocus(page) {
     // Focus the main heading of the page for screen readers
     const pageElement = document.getElementById(page);
     if (pageElement) {
       const heading = pageElement.querySelector('h1, .page-header__title');
       if (heading && 'focus' in heading) {
         // Add tabindex to make it focusable
-        (heading as HTMLElement).setAttribute('tabindex', '-1');
-        (heading as HTMLElement).focus();
+        heading.setAttribute('tabindex', '-1');
+        heading.focus();
         
         // Remove tabindex after focus
         setTimeout(() => {
-          (heading as HTMLElement).removeAttribute('tabindex');
+          heading.removeAttribute('tabindex');
         }, 100);
       }
     }
@@ -247,7 +245,7 @@ export class NavigationManager {
   /**
    * Dispatch page change event
    */
-  private dispatchPageChangeEvent(page: string): void {
+  dispatchPageChangeEvent(page) {
     const event = new CustomEvent('pagechange', {
       detail: {
         page,
@@ -261,7 +259,7 @@ export class NavigationManager {
   /**
    * Get current page from URL
    */
-  private getCurrentPageFromURL(): string {
+  getCurrentPageFromURL() {
     const hash = window.location.hash.substring(1);
     return this.isValidPage(hash) ? hash : 'home';
   }
@@ -269,14 +267,14 @@ export class NavigationManager {
   /**
    * Check if a page is valid
    */
-  private isValidPage(page: string): boolean {
+  isValidPage(page) {
     return this.validPages.includes(page);
   }
 
   /**
    * Go back to previous page
    */
-  public goBack(): void {
+  goBack() {
     if (this.navigationHistory.length > 0) {
       const previousPage = this.navigationHistory.pop();
       if (previousPage) {
@@ -291,35 +289,35 @@ export class NavigationManager {
   /**
    * Get current page
    */
-  public getCurrentPage(): string {
+  getCurrentPage() {
     return this.currentPage;
   }
 
   /**
    * Get navigation history
    */
-  public getNavigationHistory(): string[] {
+  getNavigationHistory() {
     return [...this.navigationHistory];
   }
 
   /**
    * Clear navigation history
    */
-  public clearHistory(): void {
+  clearHistory() {
     this.navigationHistory = [];
   }
 
   /**
    * Check if can go back
    */
-  public canGoBack(): boolean {
+  canGoBack() {
     return this.navigationHistory.length > 0;
   }
 
   /**
    * Get breadcrumb for current page
    */
-  public getBreadcrumb(): Array<{ name: string; page: string }> {
+  getBreadcrumb() {
     const breadcrumb = [{ name: 'Home', page: 'home' }];
     
     if (this.currentPage !== 'home') {
@@ -335,7 +333,7 @@ export class NavigationManager {
   /**
    * Setup keyboard shortcuts help
    */
-  public showKeyboardShortcuts(): void {
+  showKeyboardShortcuts() {
     const modal = document.createElement('div');
     modal.className = 'modal-overlay';
     
@@ -406,7 +404,7 @@ export class NavigationManager {
     });
 
     // Escape key to close
-    const handleEscape = (e: KeyboardEvent) => {
+    const handleEscape = (e) => {
       if (e.key === 'Escape') {
         closeModal();
         document.removeEventListener('keydown', handleEscape);
@@ -424,7 +422,7 @@ export class NavigationManager {
   /**
    * Add help shortcut (Ctrl+?)
    */
-  public setupHelpShortcut(): void {
+  setupHelpShortcut() {
     document.addEventListener('keydown', (event) => {
       if ((event.ctrlKey || event.metaKey) && event.key === '?') {
         event.preventDefault();
@@ -436,8 +434,8 @@ export class NavigationManager {
   /**
    * Get page statistics
    */
-  public getPageStats(): Record<string, number> {
-    const stats: Record<string, number> = { total: 0 };
+  getPageStats() {
+    const stats = { total: 0 };
     
     this.validPages.forEach(page => {
       stats[page] = this.navigationHistory.filter(p => p === page).length;

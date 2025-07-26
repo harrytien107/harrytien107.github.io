@@ -1,35 +1,9 @@
 // Blog Manager Component - Markdown Edition
-export interface BlogPostFrontmatter {
-  title: string;
-  description: string;
-  date: string;
-  readTime: string;
-  tags: string;
-}
-
-export interface BlogPost {
-  id: string;
-  title: string;
-  description: string;
-  date: string;
-  readTime: string;
-  tags: string[];
-  content: string;
-  frontmatter: BlogPostFrontmatter;
-}
-
-export interface MarkdownParseResult {
-  frontmatter: BlogPostFrontmatter;
-  content: string;
-}
-
 export class BlogManager {
-  private marked: any;
-
   constructor() {
     // Check if marked.js is available
-    if (typeof window !== 'undefined' && (window as any).marked) {
-      this.marked = (window as any).marked;
+    if (typeof window !== 'undefined' && window.marked) {
+      this.marked = window.marked;
     } else {
       console.warn('marked.js library not found. Please include it in your HTML.');
     }
@@ -38,7 +12,7 @@ export class BlogManager {
   /**
    * Initialize the blog manager
    */
-  public async init(): Promise<void> {
+  async init() {
     console.log('📝 Initializing Blog Manager (Markdown Edition)...');
     
     // Check if we're on a blog post page
@@ -50,7 +24,7 @@ export class BlogManager {
   /**
    * Check if current page is a blog post page
    */
-  private isBlogPostPage(): boolean {
+  isBlogPostPage() {
     return window.location.pathname.includes('blog-template.html') || 
            window.location.search.includes('post=');
   }
@@ -58,7 +32,7 @@ export class BlogManager {
   /**
    * Initialize blog post page functionality
    */
-  private async initBlogPostPage(): Promise<void> {
+  async initBlogPostPage() {
     const urlParams = new URLSearchParams(window.location.search);
     const postFile = urlParams.get('post');
     
@@ -78,7 +52,7 @@ export class BlogManager {
   /**
    * Load and render a Markdown blog post
    */
-  public async loadAndRenderPost(filename: string): Promise<void> {
+  async loadAndRenderPost(filename) {
     try {
       // Show loading state
       this.showLoadingState();
@@ -110,7 +84,7 @@ export class BlogManager {
   /**
    * Parse frontmatter from markdown content
    */
-  private parseFrontmatter(content: string): MarkdownParseResult {
+  parseFrontmatter(content) {
     const lines = content.split('\n');
     
     // Check if content starts with frontmatter delimiter
@@ -141,19 +115,19 @@ export class BlogManager {
     const frontmatterLines = lines.slice(1, endIndex);
     const contentLines = lines.slice(endIndex + 1);
     
-    const frontmatter: Partial<BlogPostFrontmatter> = {};
+    const frontmatter = {};
     
     frontmatterLines.forEach(line => {
       const colonIndex = line.indexOf(':');
       if (colonIndex > 0) {
-        const key = line.substring(0, colonIndex).trim() as keyof BlogPostFrontmatter;
+        const key = line.substring(0, colonIndex).trim();
         const value = line.substring(colonIndex + 1).trim().replace(/^["']|["']$/g, '');
         frontmatter[key] = value;
       }
     });
     
     return {
-      frontmatter: { ...this.getDefaultFrontmatter(), ...frontmatter } as BlogPostFrontmatter,
+      frontmatter: { ...this.getDefaultFrontmatter(), ...frontmatter },
       content: contentLines.join('\n')
     };
   }
@@ -161,7 +135,7 @@ export class BlogManager {
   /**
    * Get default frontmatter values
    */
-  private getDefaultFrontmatter(): BlogPostFrontmatter {
+  getDefaultFrontmatter() {
     return {
       title: 'Untitled Post',
       description: 'A blog post',
@@ -174,7 +148,7 @@ export class BlogManager {
   /**
    * Update page metadata based on frontmatter
    */
-  private updatePageMetadata(frontmatter: BlogPostFrontmatter): void {
+  updatePageMetadata(frontmatter) {
     // Update page title
     if (frontmatter.title) {
       document.title = `${frontmatter.title} - HarryTien`;
@@ -190,7 +164,7 @@ export class BlogManager {
     
     // Update meta description
     if (frontmatter.description) {
-      const metaDesc = document.querySelector('meta[name="description"]') as HTMLMetaElement;
+      const metaDesc = document.querySelector('meta[name="description"]');
       if (metaDesc) {
         metaDesc.content = frontmatter.description;
       }
@@ -233,7 +207,7 @@ export class BlogManager {
   /**
    * Render the markdown content as HTML
    */
-  private renderContent(htmlContent: string): void {
+  renderContent(htmlContent) {
     const contentElement = document.getElementById('blog-content');
     if (contentElement) {
       contentElement.innerHTML = htmlContent;
@@ -243,7 +217,7 @@ export class BlogManager {
   /**
    * Show loading state
    */
-  private showLoadingState(): void {
+  showLoadingState() {
     const contentElement = document.getElementById('blog-content');
     if (contentElement) {
       contentElement.innerHTML = `
@@ -258,7 +232,7 @@ export class BlogManager {
   /**
    * Display error message
    */
-  private displayError(message: string): void {
+  displayError(message) {
     const contentElement = document.getElementById('blog-content');
     if (contentElement) {
       contentElement.innerHTML = `
@@ -274,7 +248,7 @@ export class BlogManager {
   /**
    * Escape HTML to prevent XSS
    */
-  private escapeHtml(text: string): string {
+  escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
@@ -283,7 +257,7 @@ export class BlogManager {
   /**
    * Format date for display
    */
-  private formatDate(dateString: string): string {
+  formatDate(dateString) {
     try {
       const date = new Date(dateString);
       return date.toLocaleDateString('en-US', {
@@ -299,7 +273,7 @@ export class BlogManager {
   /**
    * Get blog post data (for external use)
    */
-  public async getBlogPost(filename: string): Promise<BlogPost | null> {
+  async getBlogPost(filename) {
     try {
       const response = await fetch(`${filename}.md`);
       if (!response.ok) return null;
@@ -326,7 +300,7 @@ export class BlogManager {
   /**
    * Legacy method for backward compatibility (returns empty array since we're not managing posts in memory)
    */
-  public async getPosts(): Promise<BlogPost[]> {
+  async getPosts() {
     console.warn('getPosts() is deprecated. Use getBlogPost() for individual posts.');
     return [];
   }

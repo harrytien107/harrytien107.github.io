@@ -1,23 +1,13 @@
 // Category Manager Component
-export interface Category {
-  id: string;
-  name: string;
-  description: string;
-  icon: string;
-  postCount: number;
-}
-
 export class CategoryManager {
-  private categories: Category[] = [];
-
   constructor() {
-    // Initialize category manager
+    this.categories = [];
   }
 
   /**
    * Initialize the category manager
    */
-  public async init(): Promise<void> {
+  async init() {
     console.log('📁 Initializing Category Manager...');
     // Setup category-specific functionality
   }
@@ -25,28 +15,28 @@ export class CategoryManager {
   /**
    * Get all categories
    */
-  public async getCategories(): Promise<Category[]> {
+  async getCategories() {
     return [...this.categories];
   }
 
   /**
    * Set categories
    */
-  public setCategories(categories: Category[]): void {
+  setCategories(categories) {
     this.categories = [...categories];
   }
 
   /**
    * Add a new category
    */
-  public addCategory(category: Category): void {
+  addCategory(category) {
     this.categories.push(category);
   }
 
   /**
    * Update an existing category
    */
-  public updateCategory(id: string, updatedCategory: Partial<Category>): void {
+  updateCategory(id, updatedCategory) {
     const index = this.categories.findIndex(category => category.id === id);
     if (index !== -1) {
       this.categories[index] = { ...this.categories[index], ...updatedCategory };
@@ -56,14 +46,14 @@ export class CategoryManager {
   /**
    * Delete a category
    */
-  public deleteCategory(id: string): void {
+  deleteCategory(id) {
     this.categories = this.categories.filter(category => category.id !== id);
   }
 
   /**
    * Get category by name
    */
-  public getCategoryByName(name: string): Category | undefined {
+  getCategoryByName(name) {
     return this.categories.find(category => 
       category.name.toLowerCase() === name.toLowerCase()
     );
@@ -72,14 +62,14 @@ export class CategoryManager {
   /**
    * Get category by ID
    */
-  public getCategoryById(id: string): Category | undefined {
+  getCategoryById(id) {
     return this.categories.find(category => category.id === id);
   }
 
   /**
    * Render categories to a container
    */
-  public renderCategories(categories: Category[], container: HTMLElement): void {
+  renderCategories(categories, container) {
     container.innerHTML = '';
 
     if (categories.length === 0) {
@@ -101,7 +91,7 @@ export class CategoryManager {
   /**
    * Create a category element
    */
-  private createCategoryElement(category: Category): HTMLElement {
+  createCategoryElement(category) {
     const categoryDiv = document.createElement('a');
     categoryDiv.className = 'category-card';
     categoryDiv.href = '#';
@@ -127,7 +117,7 @@ export class CategoryManager {
   /**
    * Add event listeners to a category element
    */
-  private addCategoryEventListeners(element: HTMLElement, category: Category): void {
+  addCategoryEventListeners(element, category) {
     element.addEventListener('click', (e) => {
       e.preventDefault();
       this.handleCategoryClick(category);
@@ -145,7 +135,7 @@ export class CategoryManager {
   /**
    * Handle category click
    */
-  private handleCategoryClick(category: Category): void {
+  handleCategoryClick(category) {
     console.log(`Clicked on category: ${category.name}`);
     
     // In a real application, this would:
@@ -160,7 +150,7 @@ export class CategoryManager {
   /**
    * Show posts for a specific category
    */
-  private showCategoryPosts(category: Category): void {
+  showCategoryPosts(category) {
     // Create modal to show category posts
     const modal = document.createElement('div');
     modal.className = 'modal-overlay';
@@ -223,7 +213,7 @@ export class CategoryManager {
     });
 
     // Escape key to close
-    const handleEscape = (e: KeyboardEvent) => {
+    const handleEscape = (e) => {
       if (e.key === 'Escape') {
         closeModal();
         document.removeEventListener('keydown', handleEscape);
@@ -243,7 +233,7 @@ export class CategoryManager {
   /**
    * Load posts for a category (simulated)
    */
-  private loadCategoryPosts(category: Category, modal: HTMLElement): void {
+  loadCategoryPosts(category, modal) {
     const postsList = modal.querySelector('#category-posts-list');
     
     // Simulate API call delay
@@ -281,7 +271,7 @@ export class CategoryManager {
   /**
    * Generate sample posts for a category (for demonstration)
    */
-  private generateSampleCategoryPosts(category: Category) {
+  generateSampleCategoryPosts(category) {
     const samplePosts = {
       'Network Security': [
         {
@@ -321,13 +311,13 @@ export class CategoryManager {
       ]
     };
 
-    return samplePosts[category.name as keyof typeof samplePosts] || [];
+    return samplePosts[category.name] || [];
   }
 
   /**
    * Search categories by name or description
    */
-  public searchCategories(query: string): Category[] {
+  searchCategories(query) {
     const lowerQuery = query.toLowerCase();
     return this.categories.filter(category => 
       category.name.toLowerCase().includes(lowerQuery) ||
@@ -338,7 +328,7 @@ export class CategoryManager {
   /**
    * Get categories sorted by post count
    */
-  public getCategoriesByPostCount(ascending: boolean = false): Category[] {
+  getCategoriesByPostCount(ascending = false) {
     return [...this.categories].sort((a, b) => 
       ascending ? a.postCount - b.postCount : b.postCount - a.postCount
     );
@@ -347,7 +337,7 @@ export class CategoryManager {
   /**
    * Update post count for a category
    */
-  public updatePostCount(categoryName: string, count: number): void {
+  updatePostCount(categoryName, count) {
     const category = this.getCategoryByName(categoryName);
     if (category) {
       this.updateCategory(category.id, { postCount: count });
@@ -357,7 +347,7 @@ export class CategoryManager {
   /**
    * Get total post count across all categories
    */
-  public getTotalPostCount(): number {
+  getTotalPostCount() {
     return this.categories.reduce((total, category) => total + category.postCount, 0);
   }
 } 

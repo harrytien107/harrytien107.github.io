@@ -1,60 +1,12 @@
-// Main application TypeScript file
+// Main application JavaScript file
 import { BlogManager } from './components/BlogManager.js';
 import { ProjectManager } from './components/ProjectManager.js';
 import { CategoryManager } from './components/CategoryManager.js';
 import { TagManager } from './components/TagManager.js';
 import { NavigationManager } from './components/NavigationManager.js';
 
-// Types and Interfaces
-interface AppConfig {
-  currentPage: string;
-  isInitialized: boolean;
-}
-
-interface Project {
-  id: string;
-  title: string;
-  description: string;
-  technologies: string[];
-  image?: string;
-  github?: string;
-  demo?: string;
-}
-
-interface BlogPost {
-  id: string;
-  title: string;
-  content: string;
-  excerpt: string;
-  tags: string[];
-  categories: string[];
-  date: string;
-  readTime: number;
-}
-
-interface Category {
-  id: string;
-  name: string;
-  description: string;
-  icon: string;
-  postCount: number;
-}
-
-interface Tag {
-  id: string;
-  name: string;
-  count: number;
-}
-
 // Main Application Class
 class PersonalWebsiteApp {
-  private config: AppConfig;
-  private navigationManager: NavigationManager;
-  private blogManager: BlogManager;
-  private projectManager: ProjectManager;
-  private categoryManager: CategoryManager;
-  private tagManager: TagManager;
-
   constructor() {
     this.config = {
       currentPage: 'home',
@@ -72,7 +24,7 @@ class PersonalWebsiteApp {
   /**
    * Initialize the application
    */
-  public async init(): Promise<void> {
+  async init() {
     try {
       console.log('🚀 Initializing Personal Website App...');
       
@@ -103,7 +55,7 @@ class PersonalWebsiteApp {
   /**
    * Set up event listeners for the application
    */
-  private setupEventListeners(): void {
+  setupEventListeners() {
     // Navigation event listeners
     this.setupNavigationListeners();
     
@@ -128,12 +80,12 @@ class PersonalWebsiteApp {
   /**
    * Set up navigation event listeners
    */
-  private setupNavigationListeners(): void {
+  setupNavigationListeners() {
     const navLinks = document.querySelectorAll('.nav__link');
     navLinks.forEach(link => {
       link.addEventListener('click', (event) => {
         event.preventDefault();
-        const page = (event.target as HTMLElement).getAttribute('data-page');
+        const page = event.target.getAttribute('data-page');
         if (page) {
           this.navigateToPage(page);
         }
@@ -144,9 +96,9 @@ class PersonalWebsiteApp {
   /**
    * Set up mobile menu toggle functionality
    */
-  private setupMobileMenuToggle(): void {
-    const toggleBtn = document.querySelector('.nav__toggle') as HTMLButtonElement;
-    const nav = document.querySelector('.nav') as HTMLElement;
+  setupMobileMenuToggle() {
+    const toggleBtn = document.querySelector('.nav__toggle');
+    const nav = document.querySelector('.nav');
 
     if (toggleBtn && nav) {
       toggleBtn.addEventListener('click', () => {
@@ -169,7 +121,7 @@ class PersonalWebsiteApp {
 
       // Close menu when clicking outside
       document.addEventListener('click', (event) => {
-        const target = event.target as HTMLElement;
+        const target = event.target;
         if (!nav.contains(target) && !toggleBtn.contains(target)) {
           toggleBtn.setAttribute('aria-expanded', 'false');
           nav.classList.remove('nav--open');
@@ -181,7 +133,7 @@ class PersonalWebsiteApp {
   /**
    * Set up blog editor event listeners
    */
-  private setupBlogEditorListeners(): void {
+  setupBlogEditorListeners() {
     const newPostBtn = document.getElementById('new-post-btn');
     if (newPostBtn) {
       newPostBtn.addEventListener('click', () => {
@@ -193,7 +145,7 @@ class PersonalWebsiteApp {
   /**
    * Navigate to a specific page
    */
-  public navigateToPage(page: string): void {
+  navigateToPage(page) {
     if (!this.isValidPage(page)) {
       console.warn(`Invalid page: ${page}. Redirecting to home.`);
       page = 'home';
@@ -228,7 +180,7 @@ class PersonalWebsiteApp {
   /**
    * Update navigation active state
    */
-  private updateNavigationActiveState(activePage: string): void {
+  updateNavigationActiveState(activePage) {
     const navLinks = document.querySelectorAll('.nav__link');
     navLinks.forEach(link => {
       const page = link.getAttribute('data-page');
@@ -239,7 +191,7 @@ class PersonalWebsiteApp {
   /**
    * Load page-specific content
    */
-  private async loadPageContent(page: string): Promise<void> {
+  async loadPageContent(page) {
     try {
       switch (page) {
         case 'home':
@@ -272,7 +224,7 @@ class PersonalWebsiteApp {
   /**
    * Load home page content
    */
-  private async loadHomeContent(): Promise<void> {
+  async loadHomeContent() {
     const projectsContainer = document.getElementById('projects-container');
     if (projectsContainer && !projectsContainer.hasChildNodes()) {
       const projects = await this.projectManager.getProjects();
@@ -283,7 +235,7 @@ class PersonalWebsiteApp {
   /**
    * Load blog page content
    */
-  private async loadBlogContent(): Promise<void> {
+  async loadBlogContent() {
     const blogContainer = document.getElementById('blog-posts-container');
     if (blogContainer) {
       const posts = await this.blogManager.getPosts();
@@ -294,7 +246,7 @@ class PersonalWebsiteApp {
   /**
    * Load categories page content
    */
-  private async loadCategoriesContent(): Promise<void> {
+  async loadCategoriesContent() {
     const categoriesContainer = document.getElementById('categories-container');
     if (categoriesContainer) {
       const categories = await this.categoryManager.getCategories();
@@ -305,7 +257,7 @@ class PersonalWebsiteApp {
   /**
    * Load tags page content
    */
-  private async loadTagsContent(): Promise<void> {
+  async loadTagsContent() {
     const tagsContainer = document.getElementById('tags-container');
     if (tagsContainer) {
       const tags = await this.tagManager.getTags();
@@ -316,7 +268,7 @@ class PersonalWebsiteApp {
   /**
    * Load initial application data
    */
-  private async loadInitialData(): Promise<void> {
+  async loadInitialData() {
     try {
       // Load sample data (in a real app, this would come from an API or CMS)
       await this.loadSampleData();
@@ -328,9 +280,9 @@ class PersonalWebsiteApp {
   /**
    * Load sample data for development
    */
-  private async loadSampleData(): Promise<void> {
+  async loadSampleData() {
     // Sample projects
-    const sampleProjects: Project[] = [
+    const sampleProjects = [
       {
         id: '1',
         title: 'Network Security Dashboard',
@@ -357,7 +309,7 @@ class PersonalWebsiteApp {
     ];
 
     // Sample blog posts
-    const samplePosts: BlogPost[] = [
+    const samplePosts = [
       {
         id: '1',
         title: 'Understanding Modern Network Security Challenges',
@@ -381,7 +333,7 @@ class PersonalWebsiteApp {
     ];
 
     // Sample categories
-    const sampleCategories: Category[] = [
+    const sampleCategories = [
       {
         id: '1',
         name: 'Network Security',
@@ -406,7 +358,7 @@ class PersonalWebsiteApp {
     ];
 
     // Sample tags
-    const sampleTags: Tag[] = [
+    const sampleTags = [
       { id: '1', name: 'networking', count: 15 },
       { id: '2', name: 'security', count: 10 },
       { id: '3', name: 'typescript', count: 8 },
@@ -426,11 +378,11 @@ class PersonalWebsiteApp {
   /**
    * Handle window resize events
    */
-  private handleWindowResize(): void {
+  handleWindowResize() {
     // Close mobile menu on resize to desktop
     if (window.innerWidth >= 768) {
-      const toggleBtn = document.querySelector('.nav__toggle') as HTMLButtonElement;
-      const nav = document.querySelector('.nav') as HTMLElement;
+      const toggleBtn = document.querySelector('.nav__toggle');
+      const nav = document.querySelector('.nav');
       
       if (toggleBtn && nav) {
         toggleBtn.setAttribute('aria-expanded', 'false');
@@ -442,7 +394,7 @@ class PersonalWebsiteApp {
   /**
    * Get initial page from URL hash or default to home
    */
-  private getInitialPage(): string {
+  getInitialPage() {
     const hash = window.location.hash.substring(1);
     return this.isValidPage(hash) ? hash : 'home';
   }
@@ -450,7 +402,7 @@ class PersonalWebsiteApp {
   /**
    * Get current page from URL hash
    */
-  private getPageFromHash(): string {
+  getPageFromHash() {
     const hash = window.location.hash.substring(1);
     return this.isValidPage(hash) ? hash : 'home';
   }
@@ -458,7 +410,7 @@ class PersonalWebsiteApp {
   /**
    * Check if a page name is valid
    */
-  private isValidPage(page: string): boolean {
+  isValidPage(page) {
     const validPages = ['home', 'blog', 'categories', 'tags', 'network', 'about'];
     return validPages.includes(page);
   }
@@ -466,7 +418,7 @@ class PersonalWebsiteApp {
   /**
    * Show error message to user
    */
-  private showErrorMessage(message: string): void {
+  showErrorMessage(message) {
     // Create and show a temporary error message
     const errorDiv = document.createElement('div');
     errorDiv.className = 'alert alert--error';
@@ -488,12 +440,9 @@ class PersonalWebsiteApp {
   /**
    * Debounce utility function
    */
-  private debounce<T extends (...args: any[]) => void>(
-    func: T,
-    wait: number
-  ): (...args: Parameters<T>) => void {
-    let timeout: number;
-    return (...args: Parameters<T>): void => {
+  debounce(func, wait) {
+    let timeout;
+    return (...args) => {
       clearTimeout(timeout);
       timeout = setTimeout(() => func.apply(this, args), wait);
     };
@@ -502,14 +451,14 @@ class PersonalWebsiteApp {
   /**
    * Get current application configuration
    */
-  public getConfig(): AppConfig {
+  getConfig() {
     return { ...this.config };
   }
 
   /**
    * Check if application is initialized
    */
-  public isInitialized(): boolean {
+  isInitialized() {
     return this.config.isInitialized;
   }
 }
@@ -520,9 +469,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   await app.init();
   
   // Make app globally available for debugging
-  (window as any).personalWebsiteApp = app;
+  window.personalWebsiteApp = app;
 });
 
 // Export for module usage
-export { PersonalWebsiteApp };
-export type { AppConfig, Project, BlogPost, Category, Tag }; 
+export { PersonalWebsiteApp }; 
