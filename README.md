@@ -17,6 +17,9 @@ A modern, responsive personal website built with HTML, CSS, and TypeScript. Feat
 
 ```
 harrytien107.github.io/
+├── .github/
+│   └── workflows/
+│       └── deploy.yml      # GitHub Actions deployment workflow
 ├── public/
 │   ├── index.html          # Main HTML file
 │   └── favicon.ico         # Site favicon
@@ -31,6 +34,8 @@ harrytien107.github.io/
 │   │   └── components/     # Reusable TypeScript modules
 │   └── assets/
 │       └── images/         # Optimized images
+├── .lighthouserc.json      # Lighthouse CI configuration
+├── package.json            # Node.js project configuration
 ├── tsconfig.json           # TypeScript configuration
 └── README.md              # Project documentation
 ```
@@ -66,7 +71,14 @@ harrytien107.github.io/
 
 5. **Serve the website**
    
-   **Option A: Simple HTTP Server (Python)**
+   **Option A: Using npm scripts (Recommended)**
+   ```bash
+   npm run serve
+   # or
+   npm run dev
+   ```
+   
+   **Option B: Simple HTTP Server (Python)**
    ```bash
    # Python 3
    python -m http.server 8000
@@ -75,11 +87,11 @@ harrytien107.github.io/
    python -m SimpleHTTPServer 8000
    ```
    
-   **Option B: Live Server (VS Code Extension)**
+   **Option C: Live Server (VS Code Extension)**
    - Install the "Live Server" extension in VS Code
    - Right-click on `public/index.html` and select "Open with Live Server"
    
-   **Option C: Other options**
+   **Option D: Other options**
    - Use any local web server like XAMPP, MAMP, or serve
    - Or simply open `public/index.html` in your browser
 
@@ -147,9 +159,17 @@ The website uses CSS custom properties for easy theming. Update the values in `s
 The project uses TypeScript for better code quality and development experience:
 
 ```bash
-# If you want to add TypeScript compilation (optional)
+# Install dependencies (if you want to use TypeScript tools)
+npm install
+
+# Type check your TypeScript files
+npm run type-check
+
+# Watch mode for automatic type checking
+npx tsc --noEmit --watch
+
+# Install TypeScript globally (optional)
 npm install -g typescript
-tsc --watch  # Watch mode for automatic compilation
 ```
 
 ### Component Architecture
@@ -189,12 +209,42 @@ The application uses a modular component system:
 
 ## 🚀 Deployment
 
-### GitHub Pages
+### Automated GitHub Pages Deployment
 
+The project includes a GitHub Actions workflow (`.github/workflows/deploy.yml`) that automatically deploys your site to GitHub Pages when you push to the main branch.
+
+**Setup Steps:**
 1. Push your code to a GitHub repository
-2. Go to repository Settings → Pages
-3. Select source branch (usually `main`)
+2. Go to repository **Settings** → **Pages**
+3. Under **Source**, select **"GitHub Actions"**
+4. The workflow will automatically trigger on your next push to `main`
+5. Your site will be available at `https://username.github.io/repository-name`
+
+**Workflow Features:**
+- ✅ Automatic deployment on push to main branch
+- ✅ TypeScript type checking
+- ✅ File optimization and preparation
+- ✅ Lighthouse CI performance monitoring
+- ✅ Manual deployment trigger option
+
+**Manual GitHub Pages Setup (Alternative)**
+
+If you prefer manual deployment:
+1. Go to repository Settings → Pages
+2. Select source branch (usually `main`)
+3. Choose root folder or `/docs` folder
 4. Your site will be available at `https://username.github.io/repository-name`
+
+**Monitoring Your Deployment:**
+- Check the "Actions" tab in your GitHub repository to see deployment status
+- View Lighthouse performance reports in the workflow artifacts
+- Any deployment errors will be shown in the Actions log
+
+**Troubleshooting:**
+- Ensure your repository is public or you have GitHub Pages enabled for private repos
+- Check that the `main` branch contains all your files
+- Verify the workflow has the necessary permissions (should be automatic)
+- Look at the Actions tab for detailed error logs if deployment fails
 
 ### Other Hosting Platforms
 
