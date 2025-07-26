@@ -100,6 +100,12 @@ jobs:
             echo "Copied source files"
           fi
           
+          # Copy blog posts folder
+          if [ -d "./_post" ]; then
+            cp -r ./_post ./dist/
+            echo "Copied blog posts"
+          fi
+          
           # Copy public assets (favicon, etc.)
           if [ -d "./public" ]; then
             cp -r ./public ./dist/
