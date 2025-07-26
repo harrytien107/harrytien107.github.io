@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DEBUG PAGE</title>
+    <style>
+        body { 
+            background: red !important; 
+            color: white !important; 
+            font-family: Arial !important; 
+            padding: 20px !important;
+            font-size: 18px !important;
+        }
+        h1 { color: yellow !important; }
+        p { margin: 10px 0 !important; }
+        .test { border: 2px solid white; padding: 10px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>🚨 EMERGENCY DEBUG PAGE 🚨</h1>
+    <div class="test">
+        <p><strong>If you can see this red page, GitHub Pages is working!</strong></p>
+        <p>Current time: <script>document.write(new Date())</script></p>
+        <p>This page bypasses Jekyll completely.</p>
+    </div>
+    
+    <div class="test">
+        <h2>Next Steps:</h2>
+        <p>1. If you see this page → GitHub Pages is working</p>
+        <p>2. If pages are blank → CSS might be hiding content</p>
+        <p>3. Check browser developer tools for errors</p>
+    </div>
+    
+    <div class="test">
+        <p><a href="/" style="color: yellow;">← Back to Home</a></p>
+        <p><a href="/blog/" style="color: yellow;">Go to Blog</a></p>
+        <p><a href="/simple-test/" style="color: yellow;">Go to Simple Test</a></p>
+    </div>
+</body>
+</html> 
