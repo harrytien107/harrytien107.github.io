@@ -205,9 +205,21 @@
                 
                 console.log('Fetching:', `${filename}.md`);
                 
-                // Fetch the markdown file
-                const response = await fetch(`${filename}.md`);
+                // Try to fetch the markdown file
+                let response = await fetch(`${filename}.md`);
                 console.log('Fetch response:', response.status, response.statusText);
+                
+                // If GitHub Pages blocks the .md file, try alternative approaches
+                if (!response.ok) {
+                    console.log('Trying alternative fetch method...');
+                    // Try with different headers
+                    response = await fetch(`${filename}.md`, {
+                        headers: {
+                            'Accept': 'text/plain,text/markdown,*/*',
+                            'Cache-Control': 'no-cache'
+                        }
+                    });
+                }
                 
                 if (!response.ok) {
                     throw new Error(`Failed to load post: ${response.status} ${response.statusText}`);
@@ -216,7 +228,7 @@
                 const markdownContent = await response.text();
                 console.log('Markdown content length:', markdownContent.length);
                 
-                // Parse frontmatter and content
+                // Parse frontmatter and content from markdown
                 const parseResult = parseFrontmatter(markdownContent);
                 console.log('Parsed frontmatter:', parseResult.frontmatter);
                 
