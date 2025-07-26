@@ -68,16 +68,22 @@ jobs:
           # Create deployment directory
           mkdir -p ./dist
           
-          # Copy public files (HTML, favicon, etc.)
-          if [ -d "./public" ]; then
-            cp -r ./public/* ./dist/
-            echo "Copied public files"
+          # Copy index.html (now at root level)
+          if [ -f "./index.html" ]; then
+            cp ./index.html ./dist/
+            echo "Copied index.html"
           fi
           
           # Copy source files
           if [ -d "./src" ]; then
             cp -r ./src ./dist/
             echo "Copied source files"
+          fi
+          
+          # Copy public assets (favicon, etc.)
+          if [ -d "./public" ]; then
+            cp -r ./public ./dist/
+            echo "Copied public files"
           fi
           
           # Copy other necessary files
@@ -88,6 +94,8 @@ jobs:
           # List contents for debugging
           echo "Deployment directory contents:"
           ls -la ./dist/
+          echo "Source files:"
+          ls -la ./dist/src/ || echo "No src directory"
           
           echo "Files prepared for deployment"
 

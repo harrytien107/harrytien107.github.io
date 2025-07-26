@@ -19,9 +19,9 @@ A modern, responsive personal website built with HTML, CSS, and TypeScript. Feat
 harrytien107.github.io/
 ├── .github/
 │   └── workflows/
-│       └── deploy.yml      # GitHub Actions deployment workflow
+│       └── main.yml        # GitHub Actions deployment workflow
+├── index.html              # Main HTML file
 ├── public/
-│   ├── index.html          # Main HTML file
 │   └── favicon.ico         # Site favicon
 ├── src/
 │   ├── styles/
@@ -90,11 +90,11 @@ harrytien107.github.io/
    
    **Option C: Live Server (VS Code Extension)**
    - Install the "Live Server" extension in VS Code
-   - Right-click on `public/index.html` and select "Open with Live Server"
+   - Right-click on `index.html` and select "Open with Live Server"
    
    **Option D: Other options**
    - Use any local web server like XAMPP, MAMP, or serve
-   - Or simply open `public/index.html` in your browser
+   - Or simply open `index.html` in your browser
 
 6. **Visit your website**
    - Open `http://localhost:8000` in your browser
@@ -243,9 +243,10 @@ If you prefer manual deployment:
 
 **Troubleshooting:**
 - Ensure your repository is public or you have GitHub Pages enabled for private repos
-- Check that the `main` branch contains all your files
+- Check that the `main` branch contains all your files including `index.html` at the root level
 - Verify the workflow has the necessary permissions (should be automatic)
 - Look at the Actions tab for detailed error logs if deployment fails
+- If you see README.md instead of your website, ensure `index.html` is at the root level
 
 ### Other Hosting Platforms
 
