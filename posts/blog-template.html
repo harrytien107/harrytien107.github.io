@@ -66,6 +66,28 @@
             background: none;
             padding: 0;
         }
+        .loading-spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--color-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto var(--spacing-sm);
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .error-message {
+            text-align: center;
+            padding: var(--spacing-xl);
+            color: var(--color-text-secondary);
+        }
+        .error-message h3 {
+            color: #dc3545;
+            margin-bottom: var(--spacing-base);
+        }
     </style>
 </head>
 <body>
@@ -150,122 +172,15 @@
         </div>
     </footer>
 
-    <script>
-        // Get the markdown file from URL parameter
-        const urlParams = new URLSearchParams(window.location.search);
-        const postFile = urlParams.get('post');
-        
-        if (!postFile) {
-            document.getElementById('blog-content').innerHTML = '<p>No blog post specified.</p>';
-        } else {
-            loadMarkdownPost(postFile);
-        }
+    <script type="module">
+        // Import the TypeScript BlogManager
+        import { BlogManager } from '../src/scripts/components/BlogManager.js';
 
-        async function loadMarkdownPost(filename) {
-            try {
-                // Fetch the markdown file
-                const response = await fetch(`${filename}.md`);
-                if (!response.ok) {
-                    throw new Error(`Failed to load post: ${response.status}`);
-                }
-                
-                const markdownContent = await response.text();
-                
-                // Parse frontmatter (metadata at the top of markdown files)
-                const { frontmatter, content } = parseFrontmatter(markdownContent);
-                
-                // Update page metadata
-                updatePageMetadata(frontmatter);
-                
-                // Convert markdown to HTML and render
-                const htmlContent = marked.parse(content);
-                document.getElementById('blog-content').innerHTML = htmlContent;
-                
-            } catch (error) {
-                console.error('Error loading blog post:', error);
-                document.getElementById('blog-content').innerHTML = 
-                    '<p>Sorry, this blog post could not be loaded. <a href="../blog.html">← Back to Blog</a></p>';
-            }
-        }
-
-        function parseFrontmatter(content) {
-            const lines = content.split('\n');
-            if (lines[0] !== '---') {
-                return { frontmatter: {}, content: content };
-            }
-            
-            let endIndex = -1;
-            for (let i = 1; i < lines.length; i++) {
-                if (lines[i] === '---') {
-                    endIndex = i;
-                    break;
-                }
-            }
-            
-            if (endIndex === -1) {
-                return { frontmatter: {}, content: content };
-            }
-            
-            const frontmatterLines = lines.slice(1, endIndex);
-            const contentLines = lines.slice(endIndex + 1);
-            
-            const frontmatter = {};
-            frontmatterLines.forEach(line => {
-                const colonIndex = line.indexOf(':');
-                if (colonIndex > 0) {
-                    const key = line.substring(0, colonIndex).trim();
-                    const value = line.substring(colonIndex + 1).trim().replace(/^["']|["']$/g, '');
-                    frontmatter[key] = value;
-                }
-            });
-            
-            return {
-                frontmatter: frontmatter,
-                content: contentLines.join('\n')
-            };
-        }
-
-        function updatePageMetadata(frontmatter) {
-            // Update page title
-            if (frontmatter.title) {
-                document.title = `${frontmatter.title} - HarryTien`;
-                document.getElementById('post-title').textContent = `${frontmatter.title} - HarryTien`;
-                document.getElementById('post-header-title').textContent = frontmatter.title;
-                document.getElementById('breadcrumb-title').textContent = frontmatter.title;
-            }
-            
-            // Update meta description
-            if (frontmatter.description) {
-                const metaDesc = document.querySelector('meta[name="description"]');
-                if (metaDesc) {
-                    metaDesc.content = frontmatter.description;
-                }
-            }
-            
-            // Update post metadata
-            if (frontmatter.date || frontmatter.readTime) {
-                const metaElement = document.getElementById('post-meta');
-                metaElement.style.display = 'block';
-                
-                if (frontmatter.date) {
-                    document.getElementById('post-date').textContent = frontmatter.date;
-                }
-                
-                if (frontmatter.readTime) {
-                    document.getElementById('post-read-time').textContent = frontmatter.readTime;
-                }
-            }
-            
-            // Update tags
-            if (frontmatter.tags) {
-                const tagsElement = document.getElementById('post-tags');
-                const tags = frontmatter.tags.split(',').map(tag => tag.trim());
-                tagsElement.innerHTML = tags.map(tag => 
-                    `<span class="tag">${tag}</span>`
-                ).join('');
-                tagsElement.style.display = 'block';
-            }
-        }
+        // Initialize the blog manager when the page loads
+        document.addEventListener('DOMContentLoaded', async () => {
+            const blogManager = new BlogManager();
+            await blogManager.init();
+        });
     </script>
     
     <script src="../src/scripts/main.ts" type="module"></script>

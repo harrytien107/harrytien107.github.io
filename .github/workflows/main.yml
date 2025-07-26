@@ -101,8 +101,8 @@ jobs:
           fi
           
           # Copy blog posts folder
-          if [ -d "./_post" ]; then
-            cp -r ./_post ./dist/
+          if [ -d "./posts" ]; then
+            cp -r ./posts ./dist/
             echo "Copied blog posts"
           fi
           
