@@ -119,7 +119,7 @@ class PersonalWebsiteApp {
     }, 250));
 
     // Handle browser back/forward
-    window.addEventListener('popstate', (event) => {
+    window.addEventListener('popstate', () => {
       const page = this.getPageFromHash();
       this.navigateToPage(page);
     });

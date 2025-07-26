@@ -293,7 +293,7 @@ export class TagManager {
                   ${post.excerpt}
                 </p>
                 <div style="display: flex; flex-wrap: wrap; gap: 0.25rem;">
-                  ${post.tags.map(t => `<span class="tag" style="font-size: 0.75rem;">${t}</span>`).join('')}
+                  ${post.tags.map((t: string) => `<span class="tag" style="font-size: 0.75rem;">${t}</span>`).join('')}
                 </div>
               </div>
             `).join('')}

@@ -81,7 +81,7 @@ export class NavigationManager {
    */
   private setupHistoryHandling(): void {
     // Handle browser back/forward buttons
-    window.addEventListener('popstate', (event) => {
+    window.addEventListener('popstate', () => {
       const page = this.getCurrentPageFromURL();
       this.showPage(page, false); // Don't push to history on popstate
     });
@@ -437,7 +437,7 @@ export class NavigationManager {
    * Get page statistics
    */
   public getPageStats(): Record<string, number> {
-    const stats = { total: 0 };
+    const stats: Record<string, number> = { total: 0 };
     
     this.validPages.forEach(page => {
       stats[page] = this.navigationHistory.filter(p => p === page).length;
