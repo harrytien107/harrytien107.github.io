@@ -4,8 +4,10 @@ title: My Learning Journey From Zero to Network
 description: My honest journey learning about networks from zero - sharing the struggles and discoveries
 date: 2024-10-28
 readTime: 3 min read
-categories: [learning, journey]
-tags: [Learning, Beginner, Journey]
+image: /src/assets/images/learning-journey-hero.svg
+author: HarryTien
+categories: [Learning, Personal]
+tags: [Networking, Beginner, Growth, Self-improvement]
 ---
 
 Let me be completely honest with you: I really don't know anything about networks. But I'm documenting my learning journey because I believe there's value in sharing the struggle, the confusion, and the small victories that come with learning something new.

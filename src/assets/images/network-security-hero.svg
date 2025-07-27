@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="600" viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a2980;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#26d0ce;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="shield-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4facfe;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#00f2fe;stop-opacity:0.9" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="600" fill="url(#bg-gradient)"/>
+  
+  <!-- Network grid pattern -->
+  <g opacity="0.1" stroke="#ffffff" stroke-width="1">
+    <!-- Horizontal lines -->
+    <line x1="0" y1="100" x2="1200" y2="100" />
+    <line x1="0" y1="200" x2="1200" y2="200" />
+    <line x1="0" y1="300" x2="1200" y2="300" />
+    <line x1="0" y1="400" x2="1200" y2="400" />
+    <line x1="0" y1="500" x2="1200" y2="500" />
+    
+    <!-- Vertical lines -->
+    <line x1="200" y1="0" x2="200" y2="600" />
+    <line x1="400" y1="0" x2="400" y2="600" />
+    <line x1="600" y1="0" x2="600" y2="600" />
+    <line x1="800" y1="0" x2="800" y2="600" />
+    <line x1="1000" y1="0" x2="1000" y2="600" />
+  </g>
+  
+  <!-- Security shield in center -->
+  <g transform="translate(600, 300)">
+    <!-- Shield outline -->
+    <path d="M0,-180 L-120,-120 L-120,60 C-120,150 0,210 0,210 C0,210 120,150 120,60 L120,-120 Z" 
+          fill="url(#shield-gradient)" stroke="#ffffff" stroke-width="6" opacity="0.9"/>
+    
+    <!-- Lock inside shield -->
+    <rect x="-45" y="-30" width="90" height="90" rx="5" fill="#ffffff"/>
+    <rect x="-60" y="-60" width="120" height="30" rx="5" fill="#ffffff"/>
+    <circle cx="0" cy="15" r="15" fill="#1a2980"/>
+    <rect x="-5" y="-5" width="10" height="20" fill="#ffffff" transform="translate(0, 15)"/>
+  </g>
+  
+  <!-- Connection lines radiating from shield -->
+  <g opacity="0.3" stroke="#ffffff" stroke-width="2">
+    <line x1="600" y1="300" x2="300" y2="150" />
+    <line x1="600" y1="300" x2="200" y2="300" />
+    <line x1="600" y1="300" x2="300" y2="450" />
+    <line x1="600" y1="300" x2="900" y2="150" />
+    <line x1="600" y1="300" x2="1000" y2="300" />
+    <line x1="600" y1="300" x2="900" y2="450" />
+    
+    <!-- Network nodes -->
+    <circle cx="300" cy="150" r="10" fill="#ffffff"/>
+    <circle cx="200" cy="300" r="10" fill="#ffffff"/>
+    <circle cx="300" cy="450" r="10" fill="#ffffff"/>
+    <circle cx="900" cy="150" r="10" fill="#ffffff"/>
+    <circle cx="1000" cy="300" r="10" fill="#ffffff"/>
+    <circle cx="900" cy="450" r="10" fill="#ffffff"/>
+  </g>
+  
+  <!-- Binary code pattern -->
+  <g opacity="0.2" fill="#ffffff" font-family="monospace" font-size="14">
+    <text x="100" y="80">01001110 01100101 01110100 01110111 01101111 01110010 01101011</text>
+    <text x="150" y="520">01010011 01100101 01100011 01110101 01110010 01101001 01110100 01111001</text>
+    <text x="900" y="120">01000010 01100101 01110011 01110100</text>
+    <text x="950" y="480">01010000 01110010 01100001 01100011 01110100 01101001 01100011 01100101 01110011</text>
+  </g>
+  
+  <!-- Title -->
+  <text x="600" y="500" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="40" font-weight="bold">Network Security Best Practices</text>
+  <text x="600" y="550" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="20" opacity="0.8">Essential guidelines for protecting your network infrastructure</text>
+</svg>

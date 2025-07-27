@@ -3,42 +3,219 @@ layout: default
 ---
 
 <article class="blog-post">
+    {% if page.image %}
+    <div class="blog-post__hero" style="background-image: url('{{ page.image | relative_url }}')">
+        <div class="blog-post__hero-overlay"></div>
+        <div class="container">
+            <h1 class="blog-post__hero-title">{{ page.title }}</h1>
+            {% if page.description %}
+            <p class="blog-post__hero-description">{{ page.description }}</p>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
     <div class="container">
         <header class="blog-post__header">
             <nav class="breadcrumb">
-                <a href="{{ '/blog/' | relative_url }}">Blog</a> &gt; {{ page.title }}
+                <a href="{{ '/blog/' | relative_url }}"><i class="breadcrumb__icon">📚</i> Blog</a> &gt; {{ page.title }}
             </nav>
             
             <div class="blog-post__meta">
-                <time class="blog-post__date">{{ page.date | date: "%b %d, %Y" }}</time>
-                {% if page.readTime %}
-                <span class="blog-post__read-time">{{ page.readTime }}</span>
-                {% endif %}
+                <div class="blog-post__meta-left">
+                    <time class="blog-post__date">{{ page.date | date: "%b %d, %Y" }}</time>
+                    {% if page.readTime %}
+                    <span class="blog-post__read-time">{{ page.readTime }}</span>
+                    {% endif %}
+                    
+                    {% if page.author %}
+                    <span class="blog-post__author">👤 {{ page.author }}</span>
+                    {% endif %}
+                </div>
+                
+                <div class="blog-post__meta-right">
+                    <button class="blog-post__share" title="Share this post">
+                        <span>Share</span> <i class="blog-post__share-icon">🔗</i>
+                    </button>
+                </div>
             </div>
             
+            {% if page.image == nil %}
             <h1 class="blog-post__title">{{ page.title }}</h1>
             
             {% if page.description %}
             <p class="blog-post__description">{{ page.description }}</p>
             {% endif %}
+            {% endif %}
             
-            {% if page.tags %}
-            <div class="blog-post__tags">
-                {% for tag in page.tags %}
-                <span class="tag">{{ tag }}</span>
-                {% endfor %}
+            {% if page.categories or page.tags %}
+            <div class="blog-post__taxonomy">
+                {% if page.categories.size > 0 %}
+                <div class="blog-post__categories">
+                    <span class="blog-post__taxonomy-label">Categories:</span>
+                    {% for category in page.categories %}
+                    <span class="tag tag--primary">{{ category }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                {% if page.tags.size > 0 %}
+                <div class="blog-post__tags">
+                    <span class="blog-post__taxonomy-label">Tags:</span>
+                    {% for tag in page.tags %}
+                    <span class="tag">{{ tag }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
             </div>
             {% endif %}
         </header>
 
         <div class="blog-post__content">
+            <div class="blog-post__toc">
+                <div class="blog-post__toc-header">Table of Contents</div>
+                <div class="blog-post__toc-content">
+                    <!-- This will be populated by JavaScript -->
+                    <div id="toc"></div>
+                </div>
+            </div>
+            
             {{ content }}
         </div>
 
         <footer class="blog-post__footer">
+            <div class="blog-post__author-box">
+                <div class="blog-post__author-avatar">
+                    <img src="{{ '/src/assets/images/profile.jpg' | relative_url }}" alt="Author Avatar">
+                </div>
+                <div class="blog-post__author-info">
+                    <h3 class="blog-post__author-name">{{ page.author | default: "HarryTien" }}</h3>
+                    <p class="blog-post__author-bio">Network Engineer with a passion for security, technology, and coding. I love sharing my journey and learning experiences through this blog.</p>
+                </div>
+            </div>
+            
             <div class="blog-post__navigation">
-                <a href="{{ '/blog/' | relative_url }}" class="btn btn--outline">← Back to Blog</a>
+                {% if page.previous.url %}
+                <a href="{{ page.previous.url | relative_url }}" class="blog-post__prev">
+                    <span class="blog-post__nav-label">Previous Post</span>
+                    <span class="blog-post__nav-title">{{ page.previous.title }}</span>
+                </a>
+                {% endif %}
+                
+                <a href="{{ '/blog/' | relative_url }}" class="blog-post__back">
+                    <span class="blog-post__nav-label">Back to</span>
+                    <span class="blog-post__nav-title">All Posts</span>
+                </a>
+                
+                {% if page.next.url %}
+                <a href="{{ page.next.url | relative_url }}" class="blog-post__next">
+                    <span class="blog-post__nav-label">Next Post</span>
+                    <span class="blog-post__nav-title">{{ page.next.title }}</span>
+                </a>
+                {% endif %}
+            </div>
+            
+            <div class="blog-post__related">
+                <h3 class="blog-post__related-title">Related Posts</h3>
+                <div class="blog-post__related-posts">
+                    {% assign maxRelated = 3 %}
+                    {% assign minCommonTags = 1 %}
+                    {% assign maxRelatedCounter = 0 %}
+                
+                    {% for post in site.posts %}
+                        {% if post.url != page.url %}
+                            {% assign sameTagCount = 0 %}
+                            {% for tag in post.tags %}
+                                {% if page.tags contains tag %}
+                                    {% assign sameTagCount = sameTagCount | plus: 1 %}
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if sameTagCount >= minCommonTags and maxRelatedCounter < maxRelated %}
+                                <a href="{{ post.url | relative_url }}" class="blog-post__related-post">
+                                    <span class="blog-post__related-post-title">{{ post.title }}</span>
+                                    <span class="blog-post__related-post-date">{{ post.date | date: "%b %d, %Y" }}</span>
+                                </a>
+                                {% assign maxRelatedCounter = maxRelatedCounter | plus: 1 %}
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if maxRelatedCounter == 0 %}
+                        {% for post in site.posts limit:3 %}
+                            {% if post.url != page.url %}
+                                <a href="{{ post.url | relative_url }}" class="blog-post__related-post">
+                                    <span class="blog-post__related-post-title">{{ post.title }}</span>
+                                    <span class="blog-post__related-post-date">{{ post.date | date: "%b %d, %Y" }}</span>
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
             </div>
         </footer>
     </div>
-</article> 
+</article>
+
+<script>
+// Simple table of contents generator
+document.addEventListener('DOMContentLoaded', function() {
+    const content = document.querySelector('.blog-post__content');
+    const tocContainer = document.getElementById('toc');
+    
+    if (!content || !tocContainer) return;
+    
+    const headings = content.querySelectorAll('h2, h3');
+    if (headings.length === 0) {
+        document.querySelector('.blog-post__toc').style.display = 'none';
+        return;
+    }
+    
+    const toc = document.createElement('ul');
+    toc.className = 'blog-post__toc-list';
+    
+    headings.forEach((heading, index) => {
+        // Add ID to the heading if it doesn't have one
+        if (!heading.id) {
+            heading.id = 'heading-' + index;
+        }
+        
+        const listItem = document.createElement('li');
+        listItem.className = 'blog-post__toc-item';
+        if (heading.tagName === 'H3') {
+            listItem.classList.add('blog-post__toc-item--sub');
+        }
+        
+        const link = document.createElement('a');
+        link.href = '#' + heading.id;
+        link.textContent = heading.textContent;
+        link.className = 'blog-post__toc-link';
+        
+        listItem.appendChild(link);
+        toc.appendChild(listItem);
+    });
+    
+    tocContainer.appendChild(toc);
+    
+    // Share button functionality
+    const shareButton = document.querySelector('.blog-post__share');
+    if (shareButton) {
+        shareButton.addEventListener('click', function() {
+            if (navigator.share) {
+                navigator.share({
+                    title: document.title,
+                    url: window.location.href
+                });
+            } else {
+                // Fallback to copying the URL to clipboard
+                navigator.clipboard.writeText(window.location.href)
+                    .then(() => {
+                        shareButton.innerText = 'URL Copied!';
+                        setTimeout(() => {
+                            shareButton.innerHTML = '<span>Share</span> <i class="blog-post__share-icon">🔗</i>';
+                        }, 2000);
+                    });
+            }
+        });
+    }
+});</script> 
