@@ -6,19 +6,40 @@ permalink: /blog/
 ---
 
 <section class="page page--blog page--active">
-    <div class="container">
-        <header class="page__header">
-            <h1 class="page__title">Blog</h1>
-            <p class="page__description">
-                Welcome to my blog where I share my learning journey in network security, 
-                technology discoveries, and personal insights from my coding adventures.
-            </p>
-        </header>
+    <div class="blog-hero">
+        <div class="container">
+            <header class="blog-hero__content">
+                <h1 class="blog-hero__title">Blog</h1>
+                <p class="blog-hero__description">
+                    Welcome to my blog where I share my learning journey in network security, 
+                    technology discoveries, and personal insights from my coding adventures.
+                </p>
+            </header>
+        </div>
+    </div>
+    
+    <div class="blog-filters">
+        <div class="container">
+            <div class="blog-filters__content">
+                <div class="blog-filters__search">
+                    <input type="text" id="blog-search" placeholder="Search posts..." class="blog-filters__search-input">
+                </div>
+                <div class="blog-filters__categories">
+                    <button class="blog-filters__category blog-filters__category--active" data-category="all">All</button>
+                    {% assign categories = site.posts | map: "categories" | flatten | uniq %}
+                    {% for category in categories %}
+                        <button class="blog-filters__category" data-category="{{ category | downcase }}">{{ category }}</button>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <div class="container">
         <div class="blog-posts">
             {% for post in site.posts %}
-            <article class="blog-post-card">
-                <div class="blog-post-card__image" style="background-image: url('{% if post.image %}{{ post.image | relative_url }}{% else %}{{ '/src/assets/images/default-blog-image.jpg' | relative_url }}{% endif %}')">
+            <article class="blog-post-card" data-categories="{{ post.categories | join: ' ' | downcase }}">
+                <div class="blog-post-card__image" style="background-image: url(&quot;{% if post.image %}{{ post.image | relative_url }}{% else %}{{ '/src/assets/images/default-blog-image.svg' | relative_url }}{% endif %}&quot;)">
                     <div class="blog-post-card__image-overlay"></div>
                     {% if post.categories.size > 0 %}
                     <span class="blog-post-card__category">{{ post.categories[0] }}</span>
@@ -55,5 +76,71 @@ permalink: /blog/
             </article>
             {% endfor %}
         </div>
+        
+        <div class="blog-empty" style="display: none;">
+            <div class="blog-empty__icon">🔍</div>
+            <h3 class="blog-empty__title">No posts found</h3>
+            <p class="blog-empty__text">Try adjusting your search or filter criteria</p>
+        </div>
     </div>
-</section> 
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('blog-search');
+    const categoryButtons = document.querySelectorAll('.blog-filters__category');
+    const blogPosts = document.querySelectorAll('.blog-post-card');
+    const emptyState = document.querySelector('.blog-empty');
+    
+    // Filter posts by search term
+    function filterPosts() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const activeCategory = document.querySelector('.blog-filters__category--active').dataset.category;
+        
+        let visiblePosts = 0;
+        
+        blogPosts.forEach(post => {
+            const title = post.querySelector('.blog-post-card__title').textContent.toLowerCase();
+            const excerpt = post.querySelector('.blog-post-card__excerpt').textContent.toLowerCase();
+            const categories = post.dataset.categories;
+            const tags = Array.from(post.querySelectorAll('.tag')).map(tag => tag.textContent.toLowerCase()).join(' ');
+            
+            const matchesSearch = searchTerm === '' || 
+                title.includes(searchTerm) || 
+                excerpt.includes(searchTerm) || 
+                tags.includes(searchTerm);
+                
+            const matchesCategory = activeCategory === 'all' || categories.includes(activeCategory);
+            
+            if (matchesSearch && matchesCategory) {
+                post.style.display = 'grid';
+                visiblePosts++;
+            } else {
+                post.style.display = 'none';
+            }
+        });
+        
+        // Show/hide empty state
+        if (visiblePosts === 0) {
+            emptyState.style.display = 'flex';
+        } else {
+            emptyState.style.display = 'none';
+        }
+    }
+    
+    // Handle search input
+    searchInput.addEventListener('input', filterPosts);
+    
+    // Handle category filtering
+    categoryButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Update active button
+            document.querySelector('.blog-filters__category--active').classList.remove('blog-filters__category--active');
+            this.classList.add('blog-filters__category--active');
+            
+            // Filter posts
+            filterPosts();
+        });
+    });
+});
+</script> 
