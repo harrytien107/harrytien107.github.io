@@ -26,7 +26,8 @@ navigation:
   - title: Tags
     url: /tags/
   - title: Network
-    url: /network/
+    url: https://glasspham.github.io/Support-Network
+    external: true
   - title: About
     url: /about/
 
