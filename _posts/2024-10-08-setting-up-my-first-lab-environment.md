@@ -5,7 +5,7 @@ description: My attempt to create a home lab for network testing - documenting f
 date: 2024-10-08
 readTime: 5 min read
 categories: [networking, hands-on]
-tags: [Lab Setup, Hands-on, Mistakes]
+tags: [Lab Setup, Hands-on]
 ---
 
 Documenting my attempt to create a home lab for network testing. Spoiler alert: it didn't go as planned, but I learned a lot from the experience. Sometimes the best education comes from making mistakes and figuring out what went wrong!
@@ -97,4 +97,4 @@ If you're thinking about setting up your own lab but feeling intimidated, don't 
 
 Start with the simplest possible setup, document everything you do, and be patient with yourself. Every mistake is a lesson, and every small success builds toward understanding the bigger picture.
 
-Remember: I really don't know much about networks, but I know more now than I did before I started this lab experiment. Progress is progress, no matter how small! 
+Remember: I really don't know much about networks, but I know more now than I did before I started this lab experiment. Progress is progress, no matter how small!
