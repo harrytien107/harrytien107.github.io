@@ -6,16 +6,18 @@
 class AdminDashboard {
     constructor() {
         this.githubAPI = null;
-        this.spotifyAPI = null;
         this.cryptoUtils = new CryptoUtils();
         this.posts = [];
+        this.projects = [];
         this.categories = [];
         this.tags = [];
-        this.playlists = [];
         this.currentEditPost = null;
+        this.currentEditProject = null;
         this.currentEditCategory = null;
         this.currentEditTag = null;
         this.deleteCallback = null;
+        this.pendingImageUpload = null;
+        this.pendingProjectImageUpload = null;
 
         this.init();
     }
@@ -54,12 +56,18 @@ class AdminDashboard {
         document.getElementById('save-post-btn')?.addEventListener('click', () => this.savePost());
         document.getElementById('posts-search')?.addEventListener('input', (e) => this.filterPosts(e.target.value));
 
-        // Thumbnail upload
-        document.getElementById('upload-thumbnail-btn')?.addEventListener('click', () => {
-            document.getElementById('post-thumbnail')?.click();
-        });
-        document.getElementById('post-thumbnail')?.addEventListener('change', (e) => this.handleThumbnailUpload(e));
+        // Thumbnail upload - Fixed: direct file input change
+        document.getElementById('post-thumbnail')?.addEventListener('change', (e) => this.handleThumbnailSelect(e));
         document.getElementById('remove-thumbnail-btn')?.addEventListener('click', () => this.removeThumbnail());
+
+        // Projects
+        document.getElementById('new-project-btn')?.addEventListener('click', () => this.openProjectModal());
+        document.getElementById('save-project-btn')?.addEventListener('click', () => this.saveProject());
+        document.getElementById('projects-search')?.addEventListener('input', (e) => this.filterProjects(e.target.value));
+
+        // Project image upload
+        document.getElementById('project-image')?.addEventListener('change', (e) => this.handleProjectImageSelect(e));
+        document.getElementById('remove-project-image-btn')?.addEventListener('click', () => this.removeProjectImage());
 
         // Categories
         document.getElementById('new-category-btn')?.addEventListener('click', () => this.openCategoryModal());
@@ -70,9 +78,6 @@ class AdminDashboard {
         document.getElementById('new-tag-btn')?.addEventListener('click', () => this.openTagModal());
         document.getElementById('save-tag-btn')?.addEventListener('click', () => this.saveTag());
         document.getElementById('tags-search')?.addEventListener('input', (e) => this.filterTags(e.target.value));
-
-        // Spotify
-        document.getElementById('connect-spotify-btn')?.addEventListener('click', () => this.connectSpotify());
 
         // Modals
         document.querySelectorAll('[data-close-modal]').forEach(btn => {
@@ -103,11 +108,9 @@ class AdminDashboard {
         try {
             const credentials = await this.cryptoUtils.getCredentials();
             if (credentials) {
-                const { githubToken, spotifyClientId, spotifyClientSecret } = credentials;
+                const { githubToken } = credentials;
                 if (githubToken) {
                     document.getElementById('github-token').value = githubToken;
-                    document.getElementById('spotify-client-id').value = spotifyClientId || '';
-                    document.getElementById('spotify-client-secret').value = spotifyClientSecret || '';
                     document.getElementById('remember-credentials').checked = true;
                 }
             }
@@ -121,8 +124,6 @@ class AdminDashboard {
         e.preventDefault();
 
         const githubToken = document.getElementById('github-token').value.trim();
-        const spotifyClientId = document.getElementById('spotify-client-id').value.trim();
-        const spotifyClientSecret = document.getElementById('spotify-client-secret').value.trim();
         const remember = document.getElementById('remember-credentials').checked;
 
         if (!githubToken) {
@@ -146,17 +147,10 @@ class AdminDashboard {
             // Store credentials if requested (encrypted)
             if (remember) {
                 await this.cryptoUtils.storeCredentials({
-                    githubToken,
-                    spotifyClientId,
-                    spotifyClientSecret
+                    githubToken
                 });
             } else {
                 this.cryptoUtils.clearCredentials();
-            }
-
-            // Initialize Spotify API if credentials provided
-            if (spotifyClientId && spotifyClientSecret) {
-                this.spotifyAPI = new SpotifyAPI(spotifyClientId, spotifyClientSecret);
             }
 
             // Show dashboard
@@ -182,11 +176,10 @@ class AdminDashboard {
 
     async handleLogout() {
         this.githubAPI = null;
-        this.spotifyAPI = null;
         this.posts = [];
+        this.projects = [];
         this.categories = [];
         this.tags = [];
-        this.playlists = [];
 
         document.getElementById('dashboard').classList.add('hidden');
         document.getElementById('login-screen').classList.remove('hidden');
@@ -223,9 +216,9 @@ class AdminDashboard {
         const titles = {
             dashboard: 'Dashboard',
             posts: 'Blog Posts',
+            projects: 'My Projects',
             categories: 'Categories',
-            tags: 'Tags',
-            spotify: 'Spotify Playlists'
+            tags: 'Tags'
         };
         document.getElementById('page-title').textContent = titles[page] || 'Dashboard';
 
@@ -244,6 +237,10 @@ class AdminDashboard {
                 this.navigateTo('posts');
                 this.openPostModal();
                 break;
+            case 'new-project':
+                this.navigateTo('projects');
+                this.openProjectModal();
+                break;
             case 'new-category':
                 this.navigateTo('categories');
                 this.openCategoryModal();
@@ -251,10 +248,6 @@ class AdminDashboard {
             case 'new-tag':
                 this.navigateTo('tags');
                 this.openTagModal();
-                break;
-            case 'refresh-spotify':
-                this.navigateTo('spotify');
-                this.loadSpotifyPlaylists();
                 break;
         }
     }
@@ -267,7 +260,7 @@ class AdminDashboard {
         try {
             await Promise.all([
                 this.loadPosts(),
-                this.loadSpotifyPlaylists()
+                this.loadProjects()
             ]);
             this.updateDashboardStats();
         } catch (error) {
@@ -277,9 +270,9 @@ class AdminDashboard {
 
     updateDashboardStats() {
         document.getElementById('stat-posts').textContent = this.posts.length;
+        document.getElementById('stat-projects').textContent = this.projects.length;
         document.getElementById('stat-categories').textContent = this.categories.length;
         document.getElementById('stat-tags').textContent = this.tags.length;
-        document.getElementById('stat-playlists').textContent = this.playlists.length || '-';
 
         // Update recent posts
         const recentPostsContainer = document.getElementById('recent-posts');
@@ -387,6 +380,7 @@ class AdminDashboard {
 
     openPostModal(post = null) {
         this.currentEditPost = post;
+        this.pendingImageUpload = null;
         const modal = document.getElementById('post-modal');
         const title = document.getElementById('post-modal-title');
         const form = document.getElementById('post-form');
@@ -410,6 +404,9 @@ class AdminDashboard {
                 const preview = document.getElementById('thumbnail-preview');
                 preview.innerHTML = `<img src="${post.image.startsWith('/') ? '..' + post.image : post.image}" alt="Thumbnail">`;
                 document.getElementById('remove-thumbnail-btn').style.display = 'block';
+            } else {
+                document.getElementById('thumbnail-preview').innerHTML = '<span>No image selected</span>';
+                document.getElementById('remove-thumbnail-btn').style.display = 'none';
             }
         } else {
             // Set default date to today
@@ -428,41 +425,38 @@ class AdminDashboard {
         }
     }
 
-    async handleThumbnailUpload(e) {
+    // Fixed: Handle thumbnail selection and preview
+    handleThumbnailSelect(e) {
         const file = e.target.files[0];
         if (!file) return;
 
         // Validate file type
         if (!file.type.startsWith('image/')) {
             this.showToast('Please select an image file', 'error');
+            e.target.value = '';
             return;
         }
 
         // Validate file size (max 5MB)
         if (file.size > 5 * 1024 * 1024) {
             this.showToast('Image size must be less than 5MB', 'error');
+            e.target.value = '';
             return;
         }
 
+        // Store file for later upload
+        this.pendingImageUpload = file;
+
         // Show preview
         const reader = new FileReader();
-        reader.onload = (e) => {
+        reader.onload = (event) => {
             const preview = document.getElementById('thumbnail-preview');
-            preview.innerHTML = `<img src="${e.target.result}" alt="Thumbnail preview">`;
+            preview.innerHTML = `<img src="${event.target.result}" alt="Thumbnail preview">`;
             document.getElementById('remove-thumbnail-btn').style.display = 'block';
         };
         reader.readAsDataURL(file);
-
-        // Upload to GitHub
-        try {
-            this.showToast('Uploading image...', 'info');
-            const result = await this.githubAPI.uploadPostImage(file);
-            document.getElementById('post-image-path').value = result.path;
-            this.showToast('Image uploaded successfully', 'success');
-        } catch (error) {
-            this.showToast('Failed to upload image: ' + error.message, 'error');
-            this.removeThumbnail();
-        }
+        
+        this.showToast('Image selected. It will be uploaded when you save the post.', 'info');
     }
 
     removeThumbnail() {
@@ -470,6 +464,7 @@ class AdminDashboard {
         document.getElementById('post-thumbnail').value = '';
         document.getElementById('post-image-path').value = '';
         document.getElementById('remove-thumbnail-btn').style.display = 'none';
+        this.pendingImageUpload = null;
     }
 
     async savePost() {
@@ -494,6 +489,14 @@ class AdminDashboard {
         saveBtn.innerHTML = '<span>Saving...</span>';
 
         try {
+            // Upload image if pending
+            if (this.pendingImageUpload) {
+                this.showToast('Uploading image...', 'info');
+                const result = await this.githubAPI.uploadPostImage(this.pendingImageUpload);
+                post.image = result.path;
+                this.pendingImageUpload = null;
+            }
+
             const originalFilename = document.getElementById('post-original-filename').value;
             
             if (this.currentEditPost) {
@@ -527,6 +530,230 @@ class AdminDashboard {
                 this.updateDashboardStats();
             } catch (error) {
                 this.showToast('Failed to delete post: ' + error.message, 'error');
+            }
+        };
+        document.getElementById('delete-modal').classList.add('active');
+    }
+
+    // ============================================
+    // Projects Management
+    // ============================================
+
+    async loadProjects() {
+        const container = document.getElementById('projects-list');
+        container.innerHTML = '<div class="loading">Loading projects...</div>';
+
+        try {
+            this.projects = await this.githubAPI.getProjects();
+            this.renderProjects();
+        } catch (error) {
+            container.innerHTML = `<div class="empty-state"><p>Error loading projects: ${error.message}</p></div>`;
+            this.showToast('Failed to load projects', 'error');
+        }
+    }
+
+    renderProjects(projects = this.projects) {
+        const container = document.getElementById('projects-list');
+        
+        if (projects.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                    </svg>
+                    <h3>No projects found</h3>
+                    <p>Add your first project to showcase your work</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = projects.map((project, index) => `
+            <div class="post-card" data-index="${index}">
+                <div class="post-card-image" style="background-image: url('${project.image ? (project.image.startsWith('/') ? '..' + project.image : project.image) : '../src/assets/images/default-blog-image.svg'}')">
+                </div>
+                <div class="post-card-content">
+                    <h3 class="post-card-title">${this.escapeHtml(project.title)}</h3>
+                    <p class="post-card-excerpt">${this.escapeHtml(project.description || '')}</p>
+                    <div class="post-card-meta">
+                        ${project.tech.slice(0, 3).map(t => `<span class="tech-badge">${this.escapeHtml(t)}</span>`).join('')}
+                    </div>
+                    <div class="post-card-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="admin.editProject(${index})">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                            </svg>
+                            Edit
+                        </button>
+                        <button class="btn btn-ghost btn-sm" onclick="admin.deleteProjectConfirm(${index})">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="3 6 5 6 21 6"/>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                            </svg>
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    filterProjects(query) {
+        const filtered = this.projects.filter(project => 
+            project.title.toLowerCase().includes(query.toLowerCase()) ||
+            project.description?.toLowerCase().includes(query.toLowerCase()) ||
+            project.tech.some(t => t.toLowerCase().includes(query.toLowerCase()))
+        );
+        this.renderProjects(filtered);
+    }
+
+    openProjectModal(project = null, index = null) {
+        this.currentEditProject = project ? { ...project, index } : null;
+        this.pendingProjectImageUpload = null;
+        const modal = document.getElementById('project-modal');
+        const title = document.getElementById('project-modal-title');
+        const form = document.getElementById('project-form');
+
+        title.textContent = project ? 'Edit Project' : 'New Project';
+        form.reset();
+
+        if (project) {
+            document.getElementById('project-title').value = project.title;
+            document.getElementById('project-description').value = project.description || '';
+            document.getElementById('project-tech').value = project.tech.join(', ');
+            document.getElementById('project-github').value = project.github || '';
+            document.getElementById('project-demo').value = project.demo || '';
+            document.getElementById('project-image-path').value = project.image || '';
+            document.getElementById('project-index').value = index;
+
+            // Show image preview
+            if (project.image) {
+                const preview = document.getElementById('project-image-preview');
+                preview.innerHTML = `<img src="${project.image.startsWith('/') ? '..' + project.image : project.image}" alt="Project image">`;
+                document.getElementById('remove-project-image-btn').style.display = 'block';
+            } else {
+                document.getElementById('project-image-preview').innerHTML = '<span>No image selected</span>';
+                document.getElementById('remove-project-image-btn').style.display = 'none';
+            }
+        } else {
+            document.getElementById('project-image-preview').innerHTML = '<span>No image selected</span>';
+            document.getElementById('remove-project-image-btn').style.display = 'none';
+        }
+
+        modal.classList.add('active');
+    }
+
+    editProject(index) {
+        const project = this.projects[index];
+        if (project) {
+            this.openProjectModal(project, index);
+        }
+    }
+
+    handleProjectImageSelect(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            this.showToast('Please select an image file', 'error');
+            e.target.value = '';
+            return;
+        }
+
+        // Validate file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            this.showToast('Image size must be less than 5MB', 'error');
+            e.target.value = '';
+            return;
+        }
+
+        // Store file for later upload
+        this.pendingProjectImageUpload = file;
+
+        // Show preview
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const preview = document.getElementById('project-image-preview');
+            preview.innerHTML = `<img src="${event.target.result}" alt="Project image preview">`;
+            document.getElementById('remove-project-image-btn').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+        
+        this.showToast('Image selected. It will be uploaded when you save the project.', 'info');
+    }
+
+    removeProjectImage() {
+        document.getElementById('project-image-preview').innerHTML = '<span>No image selected</span>';
+        document.getElementById('project-image').value = '';
+        document.getElementById('project-image-path').value = '';
+        document.getElementById('remove-project-image-btn').style.display = 'none';
+        this.pendingProjectImageUpload = null;
+    }
+
+    async saveProject() {
+        const project = {
+            title: document.getElementById('project-title').value.trim(),
+            description: document.getElementById('project-description').value.trim(),
+            tech: document.getElementById('project-tech').value.split(',').map(t => t.trim()).filter(t => t),
+            github: document.getElementById('project-github').value.trim(),
+            demo: document.getElementById('project-demo').value.trim(),
+            image: document.getElementById('project-image-path').value
+        };
+
+        if (!project.title || !project.description) {
+            this.showToast('Please fill in all required fields', 'error');
+            return;
+        }
+
+        const saveBtn = document.getElementById('save-project-btn');
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<span>Saving...</span>';
+
+        try {
+            // Upload image if pending
+            if (this.pendingProjectImageUpload) {
+                this.showToast('Uploading image...', 'info');
+                const result = await this.githubAPI.uploadPostImage(this.pendingProjectImageUpload);
+                project.image = result.path;
+                this.pendingProjectImageUpload = null;
+            }
+
+            const index = document.getElementById('project-index').value;
+            
+            if (this.currentEditProject && index !== '') {
+                await this.githubAPI.updateProject(parseInt(index), project);
+                this.showToast('Project updated successfully', 'success');
+            } else {
+                await this.githubAPI.createProject(project);
+                this.showToast('Project created successfully', 'success');
+            }
+
+            this.closeAllModals();
+            await this.loadProjects();
+            this.updateDashboardStats();
+
+        } catch (error) {
+            this.showToast('Failed to save project: ' + error.message, 'error');
+        } finally {
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = '<span>Save Project</span>';
+        }
+    }
+
+    deleteProjectConfirm(index) {
+        const project = this.projects[index];
+        document.getElementById('delete-message').textContent = `Are you sure you want to delete "${project.title}"?`;
+        this.deleteCallback = async () => {
+            try {
+                await this.githubAPI.deleteProject(index);
+                this.showToast('Project deleted successfully', 'success');
+                await this.loadProjects();
+                this.updateDashboardStats();
+            } catch (error) {
+                this.showToast('Failed to delete project: ' + error.message, 'error');
             }
         };
         document.getElementById('delete-modal').classList.add('active');
@@ -771,98 +998,6 @@ class AdminDashboard {
     }
 
     // ============================================
-    // Spotify Integration
-    // ============================================
-
-    async loadSpotifyPlaylists() {
-        const container = document.getElementById('spotify-content');
-        
-        if (!this.spotifyAPI || !this.spotifyAPI.hasCredentials()) {
-            container.innerHTML = `
-                <div class="spotify-not-connected">
-                    <div class="spotify-icon">
-                        <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z"/>
-                        </svg>
-                    </div>
-                    <h3>Connect Your Spotify Account</h3>
-                    <p>Add your Spotify credentials in the login screen to display your playlists</p>
-                </div>
-            `;
-            return;
-        }
-
-        container.innerHTML = '<div class="loading">Loading playlists...</div>';
-
-        try {
-            this.playlists = await this.spotifyAPI.getUserPlaylists();
-            this.renderSpotifyPlaylists();
-            this.updateDashboardStats();
-        } catch (error) {
-            container.innerHTML = `
-                <div class="spotify-not-connected">
-                    <div class="spotify-icon">
-                        <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z"/>
-                        </svg>
-                    </div>
-                    <h3>Error Loading Playlists</h3>
-                    <p>${error.message}</p>
-                </div>
-            `;
-        }
-    }
-
-    renderSpotifyPlaylists() {
-        const container = document.getElementById('spotify-content');
-        
-        if (this.playlists.length === 0) {
-            container.innerHTML = `
-                <div class="spotify-not-connected">
-                    <div class="spotify-icon">
-                        <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z"/>
-                        </svg>
-                    </div>
-                    <h3>No Playlists Found</h3>
-                    <p>No public playlists found for this account</p>
-                </div>
-            `;
-            return;
-        }
-
-        container.innerHTML = `
-            <div class="spotify-playlists">
-                ${this.playlists.map(playlist => `
-                    <div class="playlist-card">
-                        <div class="playlist-image" style="background-image: url('${playlist.image || '../src/assets/images/default-blog-image.svg'}')"></div>
-                        <div class="playlist-info">
-                            <div class="playlist-name" title="${this.escapeHtml(playlist.name)}">${this.escapeHtml(playlist.name)}</div>
-                            <div class="playlist-tracks">${playlist.tracks} tracks</div>
-                            <button class="playlist-embed-btn" onclick="admin.copyEmbedCode('${playlist.id}')">
-                                Copy Embed Code
-                            </button>
-                        </div>
-                    </div>
-                `).join('')}
-            </div>
-        `;
-    }
-
-    connectSpotify() {
-        this.showToast('Add Spotify credentials in the login screen, then log in again', 'info');
-    }
-
-    copyEmbedCode(playlistId) {
-        const embedCode = this.spotifyAPI.getEmbedCode(playlistId);
-        navigator.clipboard.writeText(embedCode).then(() => {
-            this.showToast('Embed code copied to clipboard!', 'success');
-        }).catch(() => {
-            this.showToast('Failed to copy embed code', 'error');
-        });
-    }
-
-    // ============================================
     // Modals
     // ============================================
 
@@ -871,8 +1006,11 @@ class AdminDashboard {
             modal.classList.remove('active');
         });
         this.currentEditPost = null;
+        this.currentEditProject = null;
         this.currentEditCategory = null;
         this.currentEditTag = null;
+        this.pendingImageUpload = null;
+        this.pendingProjectImageUpload = null;
     }
 
     confirmDelete() {

@@ -576,9 +576,9 @@ textarea {
     color: var(--warning);
 }
 
-.stat-icon--spotify {
-    background: rgba(29, 185, 84, 0.15);
-    color: var(--spotify-green);
+.stat-icon--projects {
+    background: rgba(59, 130, 246, 0.15);
+    color: var(--info);
 }
 
 .stat-info h3 {
@@ -1114,8 +1114,8 @@ textarea {
 }
 
 .thumbnail-preview {
-    width: 160px;
-    height: 100px;
+    width: 200px;
+    height: 120px;
     background: var(--bg-tertiary);
     border: 2px dashed var(--border-color);
     border-radius: var(--radius-md);
@@ -1143,6 +1143,48 @@ textarea {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+}
+
+.thumbnail-actions input[type="file"] {
+    padding: 0.5rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.thumbnail-actions input[type="file"]::file-selector-button {
+    padding: 0.5rem 1rem;
+    margin-right: 1rem;
+    background: var(--accent-gradient);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.thumbnail-actions input[type="file"]::file-selector-button:hover {
+    opacity: 0.9;
+}
+
+/* Tech Badge */
+.tech-badge {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+/* Projects Grid */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.25rem;
 }
 
 /* ============================================

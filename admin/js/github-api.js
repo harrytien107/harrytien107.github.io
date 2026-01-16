@@ -530,6 +530,176 @@ class GitHubAPI {
             await this.deleteFile(path, `Delete image: ${path}`, file.sha);
         }
     }
+
+    // ============================================
+    // Projects Management
+    // ============================================
+
+    /**
+     * Get projects from index.html
+     */
+    async getProjects() {
+        const file = await this.getFileContent('index.html');
+        if (!file) return [];
+
+        const content = file.content;
+        const projects = [];
+
+        // Parse project cards from HTML
+        const projectRegex = /<div class="project-card">([\s\S]*?)<\/div>\s*<\/div>\s*<\/div>/g;
+        let match;
+
+        while ((match = projectRegex.exec(content)) !== null) {
+            const cardHtml = match[0];
+            
+            // Extract image
+            const imageMatch = cardHtml.match(/src="\{\{\s*'([^']+)'\s*\|\s*relative_url\s*\}\}"/);
+            const image = imageMatch ? imageMatch[1] : '';
+
+            // Extract title
+            const titleMatch = cardHtml.match(/<h3 class="project-card__title">([^<]+)<\/h3>/);
+            const title = titleMatch ? titleMatch[1].trim() : '';
+
+            // Extract description
+            const descMatch = cardHtml.match(/<p class="project-card__description">([^<]+)<\/p>/);
+            const description = descMatch ? descMatch[1].trim() : '';
+
+            // Extract tech items
+            const techRegex = /<span class="project-card__tech-item">([^<]+)<\/span>/g;
+            const tech = [];
+            let techMatch;
+            while ((techMatch = techRegex.exec(cardHtml)) !== null) {
+                tech.push(techMatch[1].trim());
+            }
+
+            // Extract links
+            const githubMatch = cardHtml.match(/href="(https:\/\/github\.com\/[^"]+)"/);
+            const github = githubMatch ? githubMatch[1] : '';
+
+            const demoMatch = cardHtml.match(/href="(https:\/\/[^"]+)"[^>]*class="project-card__link">\s*Live Demo/);
+            const demo = demoMatch ? demoMatch[1] : '';
+
+            if (title) {
+                projects.push({ title, description, image, tech, github, demo });
+            }
+        }
+
+        this.indexHtmlSha = file.sha;
+        this.indexHtmlContent = content;
+        return projects;
+    }
+
+    /**
+     * Generate project card HTML
+     */
+    generateProjectCardHtml(project) {
+        const imagePath = project.image || '/src/assets/images/default-blog-image.svg';
+        const techItems = project.tech.map(t => 
+            `                            <span class="project-card__tech-item">${t}</span>`
+        ).join('\n');
+
+        let links = '';
+        if (project.github) {
+            links += `                            <a href="${project.github}" target="_blank" rel="noopener noreferrer" class="project-card__link">
+                                GitHub
+                            </a>\n`;
+        }
+        if (project.demo) {
+            links += `                            <a href="${project.demo}" target="_blank" rel="noopener noreferrer" class="project-card__link">
+                                Live Demo
+                            </a>`;
+        } else if (!project.github) {
+            links += `                            <span class="project-card__link" style="opacity: 0.5;">Coming Soon</span>`;
+        }
+
+        return `                <div class="project-card">
+                    <div class="project-card__image">
+                        <img src="{{ '${imagePath}' | relative_url }}" alt="${project.title}" class="project-card__image-img">
+                    </div>
+                    <div class="project-card__content">
+                        <h3 class="project-card__title">${project.title}</h3>
+                        <p class="project-card__description">${project.description}</p>
+                        <div class="project-card__tech">
+${techItems}
+                        </div>
+                        <div class="project-card__links">
+${links.trimEnd()}
+                        </div>
+                    </div>
+                </div>`;
+    }
+
+    /**
+     * Update index.html with new projects
+     */
+    async updateIndexHtmlProjects(projects) {
+        // Get fresh content
+        const file = await this.getFileContent('index.html');
+        if (!file) throw new Error('Could not read index.html');
+
+        let content = file.content;
+
+        // Find the projects grid section
+        const gridStartRegex = /<div class="projects__grid" id="projects-container">/;
+        const gridEndRegex = /<\/div>\s*<\/section>\s*<section class="music">/;
+
+        const startMatch = content.match(gridStartRegex);
+        const endMatch = content.match(gridEndRegex);
+
+        if (!startMatch || !endMatch) {
+            throw new Error('Could not find projects section in index.html');
+        }
+
+        const startIndex = startMatch.index + startMatch[0].length;
+        const endIndex = content.indexOf('</div>\n        </section>\n\n        <section class="music">');
+
+        if (endIndex === -1) {
+            throw new Error('Could not find end of projects section');
+        }
+
+        // Generate new projects HTML
+        const projectsHtml = projects.map(p => this.generateProjectCardHtml(p)).join('\n\n');
+
+        // Replace projects section
+        const before = content.substring(0, startIndex);
+        const after = content.substring(endIndex);
+        const newContent = before + '\n' + projectsHtml + '\n            ' + after;
+
+        await this.createOrUpdateFile('index.html', newContent, 'Update projects', file.sha);
+    }
+
+    /**
+     * Create a new project
+     */
+    async createProject(project) {
+        const projects = await this.getProjects();
+        projects.push(project);
+        await this.updateIndexHtmlProjects(projects);
+    }
+
+    /**
+     * Update an existing project
+     */
+    async updateProject(index, project) {
+        const projects = await this.getProjects();
+        if (index < 0 || index >= projects.length) {
+            throw new Error('Project index out of range');
+        }
+        projects[index] = project;
+        await this.updateIndexHtmlProjects(projects);
+    }
+
+    /**
+     * Delete a project
+     */
+    async deleteProject(index) {
+        const projects = await this.getProjects();
+        if (index < 0 || index >= projects.length) {
+            throw new Error('Project index out of range');
+        }
+        projects.splice(index, 1);
+        await this.updateIndexHtmlProjects(projects);
+    }
 }
 
 // Export for use in other modules
