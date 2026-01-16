@@ -68,17 +68,34 @@ class GitHubAPI {
      */
     async getFileContent(path) {
         try {
-            const response = await this.request(`/repos/${this.owner}/${this.repo}/contents/${path}?ref=${this.branch}`);
-            if (response.content) {
+            const url = `${this.baseUrl}/repos/${this.owner}/${this.repo}/contents/${path}?ref=${this.branch}`;
+            const response = await fetch(url, {
+                headers: {
+                    'Authorization': `Bearer ${this.token}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
+
+            if (response.status === 404) {
+                return null;
+            }
+
+            if (!response.ok) {
+                const error = await response.json().catch(() => ({}));
+                throw new Error(error.message || `GitHub API error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            if (data.content) {
                 return {
-                    content: atob(response.content),
-                    sha: response.sha,
-                    path: response.path
+                    content: atob(data.content),
+                    sha: data.sha,
+                    path: data.path
                 };
             }
-            return response;
+            return data;
         } catch (error) {
-            if (error.message.includes('404')) {
+            if (error.message && error.message.includes('404')) {
                 return null;
             }
             throw error;
@@ -138,7 +155,7 @@ class GitHubAPI {
      */
     async uploadImage(path, base64Content, message) {
         // Remove data URL prefix if present
-        const content = base64Content.replace(/^data:image\/\w+;base64,/, '');
+        const content = base64Content.replace(/^data:image\/[a-zA-Z+]+;base64,/, '');
         
         const body = {
             message,
@@ -146,10 +163,15 @@ class GitHubAPI {
             branch: this.branch
         };
 
-        // Check if file exists to get SHA
-        const existing = await this.getFileContent(path);
-        if (existing && existing.sha) {
-            body.sha = existing.sha;
+        // Check if file exists to get SHA (for updating existing file)
+        try {
+            const existing = await this.getFileContent(path);
+            if (existing && existing.sha) {
+                body.sha = existing.sha;
+            }
+        } catch (e) {
+            // File doesn't exist, that's fine for new uploads
+            console.log('Creating new file:', path);
         }
 
         return await this.request(`/repos/${this.owner}/${this.repo}/contents/${path}`, {
@@ -504,16 +526,23 @@ class GitHubAPI {
             reader.onload = async (e) => {
                 try {
                     const base64 = e.target.result;
-                    const filename = `post-${Date.now()}-${file.name.replace(/[^a-z0-9.]/gi, '-')}`;
+                    // Clean filename: remove special chars, keep extension
+                    const ext = file.name.split('.').pop().toLowerCase();
+                    const baseName = file.name.replace(/\.[^/.]+$/, '').replace(/[^a-z0-9]/gi, '-').substring(0, 50);
+                    const filename = `post-${Date.now()}-${baseName}.${ext}`;
                     const path = `src/assets/images/${filename}`;
                     
+                    console.log('Uploading image to:', path);
                     await this.uploadImage(path, base64, `Upload image: ${filename}`);
+                    console.log('Image uploaded successfully');
+                    
                     resolve({
                         path: `/${path}`,
                         filename
                     });
                 } catch (error) {
-                    reject(error);
+                    console.error('Upload error:', error);
+                    reject(new Error(`Failed to upload image: ${error.message}`));
                 }
             };
             reader.onerror = () => reject(new Error('Failed to read file'));
